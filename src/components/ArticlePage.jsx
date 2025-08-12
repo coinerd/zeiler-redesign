@@ -7,6 +7,9 @@ import { getArticleByUrl } from '../data/articles.js'
 import { Calendar, User, ArrowLeft, Clock, Tag } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 
+// Alle lokal verfügbaren Bilder einmalig importieren
+const imageAssets = import.meta.glob('../assets/*', { eager: true, as: 'url' })
+
 const ArticlePage = () => {
   const { '*': urlPath } = useParams()
   const [article, setArticle] = useState(null)
@@ -21,63 +24,79 @@ const ArticlePage = () => {
   }, [urlPath])
 
   const renderParagraphs = (content) => {
-    if (!content) return null;
+    if (!content) return null
 
-    // Teile Content in Paragraphen basierend auf \n\n
-    const paragraphs = content.split('\n\n').filter(para => para.trim());
+    // Teile Content in Blöcke und verarbeite eingebettete Zitate
+    const blocks = []
+    const paragraphs = content.split(/\n{2,}/).filter(para => para.trim())
 
-    return paragraphs.map((paragraph, index) => {
-      const trimmedParagraph = paragraph.trim();
-      
-      if (!trimmedParagraph) return null;
+    paragraphs.forEach(paragraph => {
+      let text = paragraph.trim()
+      const quoteRegex = /[„"][^“”"]+[“"]/
+      let match
 
-      // Erkenne Zitate (beginnen mit Anführungszeichen)
-      const isQuote = trimmedParagraph.startsWith('„') || trimmedParagraph.startsWith('"');
-      
-      if (isQuote) {
-        return (
-          <blockquote 
-            key={index} 
-            className="border-l-4 border-blue-500 pl-6 py-4 my-6 bg-blue-50 italic text-gray-800"
-          >
-            <p className="text-lg leading-relaxed">
-              {trimmedParagraph}
-            </p>
-          </blockquote>
-        );
+      while ((match = quoteRegex.exec(text)) !== null) {
+        const before = text.slice(0, match.index).replace(/:\s*$/, '').trim()
+        if (before) blocks.push({ type: 'paragraph', text: before })
+
+        const quoteText = match[0].slice(1, -1).trim()
+        if (quoteText) blocks.push({ type: 'quote', text: quoteText })
+
+        text = text.slice(match.index + match[0].length).trim()
       }
 
-      // Normale Paragraphen
+      if (text) blocks.push({ type: 'paragraph', text })
+    })
+
+    return blocks.map((block, index) => {
+      if (block.type === 'quote') {
+        return (
+          <blockquote
+            key={index}
+            className="border-l-4 border-blue-500 pl-6 py-4 my-6 bg-blue-50 italic text-gray-800"
+          >
+            <p className="text-lg leading-relaxed">{block.text}</p>
+          </blockquote>
+        )
+      }
+
       return (
-        <p 
-          key={index} 
+        <p
+          key={index}
           className="mb-6 text-gray-700 leading-relaxed text-lg"
           style={{ lineHeight: '1.8' }}
         >
-          {trimmedParagraph}
+          {block.text}
         </p>
-      );
-    });
-  };
+      )
+    })
+  }
+
+  const resolveImageSrc = (img) => {
+    const src = typeof img === 'string' ? img : img.src
+    if (!src) return ''
+    if (/^https?:/i.test(src)) return src
+    const file = src.replace(/^.*assets\//, '')
+    return imageAssets[`../assets/${file}`] || src
+  }
 
   const renderImages = (images) => {
-    if (!images || images.length === 0) return null;
+    if (!images || images.length === 0) return null
 
     return (
       <div className="my-8">
         {images.map((image, index) => (
           <figure key={index} className="mb-8">
             <div className="flex justify-center">
-              <img 
-                src={typeof image === 'string' ? `/src/assets/${image}` : image.src || `/src/assets/${image}`}
+              <img
+                src={resolveImageSrc(image)}
                 alt={typeof image === 'object' && image.alt ? image.alt : `Bild ${index + 1} zu ${article.title}`}
                 className="max-w-full h-auto rounded-lg shadow-lg border"
                 style={{ maxHeight: '500px', objectFit: 'contain' }}
                 loading="lazy"
                 onError={(e) => {
-                  console.error('Fehler beim Laden des Bildes:', image);
-                  // Fallback: Verstecke das Bild bei Fehlern
-                  e.target.style.display = 'none';
+                  console.error('Fehler beim Laden des Bildes:', image)
+                  e.target.style.display = 'none'
                 }}
               />
             </div>
@@ -89,8 +108,8 @@ const ArticlePage = () => {
           </figure>
         ))}
       </div>
-    );
-  };
+    )
+  }
 
   if (loading) {
     return (

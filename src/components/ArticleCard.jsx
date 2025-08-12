@@ -1,7 +1,11 @@
 import { Calendar, User, ArrowRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button.jsx'
 
 const ArticleCard = ({ title, excerpt, author, date, href, image }) => {
+  // Convert hash-based URLs to React Router paths
+  const routerPath = href ? href.replace('/#', '') : '#'
+  
   return (
     <article className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow duration-300">
       {image && (
@@ -42,10 +46,10 @@ const ArticleCard = ({ title, excerpt, author, date, href, image }) => {
           </div>
           
           <Button variant="ghost" size="sm" asChild>
-            <a href={href} className="flex items-center space-x-1">
+            <Link to={routerPath} className="flex items-center space-x-1">
               <span>Lesen</span>
               <ArrowRight size={14} />
-            </a>
+            </Link>
           </Button>
         </div>
       </div>

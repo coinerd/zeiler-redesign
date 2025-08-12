@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Menu, X, Search, Home, User, BookOpen, Code, History } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 
@@ -6,11 +7,11 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const navigationItems = [
-    { name: 'Startseite', href: '/#/', icon: Home },
-    { name: 'Detlef', href: '/#/category/detlef', icon: User },
-    { name: 'Julian', href: '/#/category/julian', icon: Code },
-    { name: 'Geschichte', href: '/#/category/geschichte', icon: History },
-    { name: 'Projekte', href: '/#/category/projekte', icon: BookOpen },
+    { name: 'Startseite', to: '/', icon: Home },
+    { name: 'Detlef', to: '/category/detlef', icon: User },
+    { name: 'Julian', to: '/category/julian', icon: Code },
+    { name: 'Geschichte', to: '/category/geschichte', icon: History },
+    { name: 'Projekte', to: '/category/projekte', icon: BookOpen },
   ]
 
   return (
@@ -19,9 +20,9 @@ const Header = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <a href="/#/" className="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
+            <Link to="/" className="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
               ZEILER.me
-            </a>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
@@ -29,14 +30,14 @@ const Header = () => {
             {navigationItems.map((item) => {
               const IconComponent = item.icon
               return (
-                <a
+                <Link
                   key={item.name}
-                  href={item.href}
+                  to={item.to}
                   className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                 >
                   <IconComponent size={16} />
                   <span>{item.name}</span>
-                </a>
+                </Link>
               )
             })}
           </nav>
@@ -66,15 +67,15 @@ const Header = () => {
               {navigationItems.map((item) => {
                 const IconComponent = item.icon
                 return (
-                  <a
+                  <Link
                     key={item.name}
-                    href={item.href}
+                    to={item.to}
                     className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <IconComponent size={16} />
                     <span>{item.name}</span>
-                  </a>
+                  </Link>
                 )
               })}
             </div>

@@ -5,6 +5,7 @@ import Footer from './components/Footer.jsx'
 import Breadcrumbs from './components/Breadcrumbs.jsx'
 import ArticleCard from './components/ArticleCard.jsx'
 import ArticlePage from './components/ArticlePage.jsx'
+import ArticlePageMarkdown from './components/ArticlePageMarkdown.jsx'
 import CategoryPage from './components/CategoryPage.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import { Search, BookOpen, Code, History, Users } from 'lucide-react'
@@ -238,6 +239,10 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/category/:category" element={<CategoryPage />} />
+        {/* Spezielle Route für Markdown-Artikel (Test) */}
+        <Route path="/markdown/:category/:subcategory/:slug" element={<ArticlePageMarkdown />} />
+        <Route path="/markdown/:category/:slug" element={<ArticlePageMarkdown />} />
+        {/* Fallback für alle anderen Artikel */}
         <Route path="/*" element={<ArticlePage />} />
       </Routes>
     </Router>

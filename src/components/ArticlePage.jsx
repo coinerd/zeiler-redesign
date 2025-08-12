@@ -1,11 +1,16 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import Header from './Header.jsx'
 import Footer from './Footer.jsx'
 import Breadcrumbs from './Breadcrumbs.jsx'
 import { getArticleByUrl } from '../data/articles.js'
 import { Calendar, User, ArrowLeft, Clock, Tag } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
+
+// Alle lokal verfügbaren Bilder einmalig importieren
+const imageAssets = import.meta.glob('../assets/*', { eager: true, as: 'url' })
 
 const ArticlePage = () => {
   const { '*': urlPath } = useParams()
@@ -20,64 +25,31 @@ const ArticlePage = () => {
     setLoading(false)
   }, [urlPath])
 
-  const renderParagraphs = (content) => {
-    if (!content) return null;
-
-    // Teile Content in Paragraphen basierend auf \n\n
-    const paragraphs = content.split('\n\n').filter(para => para.trim());
-
-    return paragraphs.map((paragraph, index) => {
-      const trimmedParagraph = paragraph.trim();
-      
-      if (!trimmedParagraph) return null;
-
-      // Erkenne Zitate (beginnen mit Anführungszeichen)
-      const isQuote = trimmedParagraph.startsWith('„') || trimmedParagraph.startsWith('"');
-      
-      if (isQuote) {
-        return (
-          <blockquote 
-            key={index} 
-            className="border-l-4 border-blue-500 pl-6 py-4 my-6 bg-blue-50 italic text-gray-800"
-          >
-            <p className="text-lg leading-relaxed">
-              {trimmedParagraph}
-            </p>
-          </blockquote>
-        );
-      }
-
-      // Normale Paragraphen
-      return (
-        <p 
-          key={index} 
-          className="mb-6 text-gray-700 leading-relaxed text-lg"
-          style={{ lineHeight: '1.8' }}
-        >
-          {trimmedParagraph}
-        </p>
-      );
-    });
-  };
+  const resolveImageSrc = (img) => {
+    const src = typeof img === 'string' ? img : img.src
+    if (!src) return ''
+    if (/^https?:/i.test(src)) return src
+    const file = src.split('/').pop()
+    return imageAssets[`../assets/${file}`] || src
+  }
 
   const renderImages = (images) => {
-    if (!images || images.length === 0) return null;
+    if (!images || images.length === 0) return null
 
     return (
       <div className="my-8">
         {images.map((image, index) => (
           <figure key={index} className="mb-8">
             <div className="flex justify-center">
-              <img 
-                src={typeof image === 'string' ? `/src/assets/${image}` : image.src || `/src/assets/${image}`}
+              <img
+                src={resolveImageSrc(image)}
                 alt={typeof image === 'object' && image.alt ? image.alt : `Bild ${index + 1} zu ${article.title}`}
                 className="max-w-full h-auto rounded-lg shadow-lg border"
                 style={{ maxHeight: '500px', objectFit: 'contain' }}
                 loading="lazy"
                 onError={(e) => {
-                  console.error('Fehler beim Laden des Bildes:', image);
-                  // Fallback: Verstecke das Bild bei Fehlern
-                  e.target.style.display = 'none';
+                  console.error('Fehler beim Laden des Bildes:', image)
+                  e.target.style.display = 'none'
                 }}
               />
             </div>
@@ -89,8 +61,37 @@ const ArticlePage = () => {
           </figure>
         ))}
       </div>
-    );
-  };
+    )
+  }
+
+  const markdownComponents = {
+    p: (props) => (
+      <p
+        className="mb-6 text-gray-700 leading-relaxed text-lg"
+        style={{ lineHeight: '1.8' }}
+        {...props}
+      />
+    ),
+    blockquote: (props) => (
+      <blockquote
+        className="border-l-4 border-blue-500 pl-6 py-4 my-6 bg-blue-50 italic text-gray-800"
+        {...props}
+      />
+    ),
+    img: ({ src, ...props }) => (
+      <img
+        {...props}
+        src={resolveImageSrc(src)}
+        className="max-w-full h-auto rounded-lg shadow-lg border"
+        style={{ maxHeight: '500px', objectFit: 'contain' }}
+        loading="lazy"
+        onError={(e) => {
+          console.error('Fehler beim Laden des Bildes:', src)
+          e.target.style.display = 'none'
+        }}
+      />
+    )
+  }
 
   if (loading) {
     return (
@@ -198,9 +199,11 @@ const ArticlePage = () => {
           {/* Bilder anzeigen - vor dem Content für bessere Integration */}
           {renderImages(article.images)}
 
-          {/* Artikelinhalt mit verbessertem Paragraph-Rendering */}
+          {/* Artikelinhalt aus Markdown rendern */}
           <div className="prose prose-lg max-w-none">
-            {renderParagraphs(article.content)}
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+              {article.content || ''}
+            </ReactMarkdown>
           </div>
 
           {/* Artikel-Metadaten am Ende */}

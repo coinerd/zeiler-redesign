@@ -172,53 +172,10 @@ def generate_test_articles():
             "reading_time": 1
         }
         
-        # Detlef - Deutsch
-        {
-            "id": 6,
-            "title": "Goethe: Der Erlkönig - Interpretation",
-            "excerpt": "Eine detaillierte Analyse von Goethes berühmter Ballade und ihrer literarischen Bedeutung.",
-            "content": """Goethes 'Erlkönig' aus dem Jahr 1782 ist eine der bekanntesten deutschen Balladen und ein Meisterwerk der Romantik.
-            "url": "/detlef/deutsch/goethe-erlkoenig",
-            "display_url": "/#/detlef/deutsch/goethe-erlkoenig",
-            "images": [],
-            "author": "Detlef Zeiler",
-            "category": "deutsch",
-            "scraped_url": "https://www.zeiler.me/detlef/deutsch/goethe-erlkoenig",
-            "word_count": 234,
-            "reading_time": 1
-        },
-            "url": "/detlef/deutsch/digitalisierung-schule",
-            "display_url": "/#/detlef/deutsch/digitalisierung-schule",
-            "images": [],
-            "author": "Detlef Zeiler",
-            "category": "deutsch",
-            "scraped_url": "https://www.zeiler.me/detlef/deutsch/digitalisierung-schule",
-            "word_count": 245,
-            "reading_time": 1
-        },
-        
-        # Julian - TechZap
-        {
-            "id": 8,
-            "title": "React Hooks: Ein praktischer Leitfaden",
-            "excerpt": "Eine praktische Anleitung zu React Hooks und deren Verwendung in modernen React-Anwendungen.",
-            "content": """React Hooks haben die Art, wie wir React-Komponenten schreiben, revolutioniert. Sie ermöglichen es, State und andere React-Features in Funktionskomponenten zu verwenden.
-            "content": """CSS Grid ist ein mächtiges Layout-System, das zweidimensionale Layouts ermöglicht und Flexbox perfekt ergänzt.
-            "url": "/julian/techzap/react-hooks",
-            "display_url": "/#/julian/techzap/react-hooks",
-            "images": [],
-            "author": "Julian Zeiler",
-            "category": "techzap",
-            "scraped_url": "https://www.zeiler.me/julian/techzap/react-hooks",
-            "word_count": 198,
-            "reading_time": 1
-        },
-        {
-            "id": 9,
-            "title": "Linux Server Administration Grundlagen",
-            "excerpt": "Wichtige Befehle und Konzepte für die Verwaltung von Linux-Servern.",
-            "content": """Die Administration von Linux-Servern erfordert Kenntnisse verschiedener Befehle und Konzepte.
-    """Generate the articles.js file with comprehensive test data"""
+    return test_articles
+
+if __name__ == '__main__':
+    print("🚀 Generating comprehensive test articles...")
     
     # Generate test articles
     processed_articles = generate_test_articles()
@@ -256,14 +213,14 @@ def generate_test_articles():
 export const articles = {articles_js}
 
 // Suchfunktion
-export function searchArticles(query) {
-  if (!query || query.trim().length < 2) {
+export function searchArticles(query) {{
+  if (!query || query.trim().length < 2) {{
     return articles;
-  }
+  }}
   
   const searchTerm = query.toLowerCase().trim();
   
-  return articles.filter(article => {
+  return articles.filter(article => {{
     const searchableText = [
       article.title,
       article.excerpt,
@@ -273,17 +230,17 @@ export function searchArticles(query) {
     ].join(' ').toLowerCase();
     
     return searchableText.includes(searchTerm);
-  });
-}
+  }});
+}}
 
 // Artikel nach URL finden
-export function getArticleByUrl(url) {
+export function getArticleByUrl(url) {{
   if (!url) return null;
   
   // Normalisiere URL
   const normalizedUrl = url.replace(/^\/+|\/+$/g, '').toLowerCase();
   
-  return articles.find(article => {
+  return articles.find(article => {{
     const articleUrl = article.url.replace(/^\/+|\/+$/g, '').toLowerCase();
     const displayUrl = article.display_url.replace(/^\/+|#+\/+|\/+$/g, '').toLowerCase();
     
@@ -291,22 +248,22 @@ export function getArticleByUrl(url) {
            displayUrl === normalizedUrl ||
            articleUrl.endsWith(normalizedUrl) ||
            displayUrl.endsWith(normalizedUrl);
-  }) || null;
-}
+  }}) || null;
+}}
 
 // Artikel nach Kategorie
-export function getArticlesByCategory(category) {
+export function getArticlesByCategory(category) {{
   return articles.filter(article => article.category === category);
-}
+}}
 
 // Statistiken
-export const articleStats = {
+export const articleStats = {{
   total: articles.length,
   categories: [...new Set(articles.map(a => a.category))],
   authors: [...new Set(articles.map(a => a.author))],
   totalWords: articles.reduce((sum, a) => sum + a.word_count, 0),
   averageReadingTime: Math.round(articles.reduce((sum, a) => sum + a.reading_time, 0) / articles.length)
-};
+}};
 """
     
     # Create directory if it doesn't exist
@@ -320,16 +277,8 @@ export const articleStats = {
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(js_content)
         print(f"✅ Generated {output_file} successfully!")
-        return True
+        print("✅ Comprehensive test articles generated successfully!")
     except Exception as e:
         print(f"❌ Error writing {output_file}: {e}")
-        return False
-
-if __name__ == '__main__':
-    print("🚀 Generating comprehensive test articles...")
-    
-    if generate_articles_js():
-        print("✅ Comprehensive test articles generated successfully!")
-    else:
         print("❌ Failed to generate test articles!")
         exit(1)

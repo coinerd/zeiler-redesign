@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Clock, User, Calendar, Tag } from 'lucide-react';
 import MarkdownRenderer from './MarkdownRenderer';
 import Breadcrumbs from './Breadcrumbs';
+import { parseMarkdownWithFrontMatter, cleanArticleTitle, cleanArticleContent, validateArticleContent } from '../utils/MarkdownParser';
 
 /**
  * Artikel-Seite mit Markdown-Unterstützung
@@ -30,6 +31,35 @@ const ArticlePageMarkdown = () => {
         const foundArticle = await findArticleByPath(urlPath);
         
         if (foundArticle) {
+          // Parse Markdown mit Front Matter
+          const { metadata, content } = parseMarkdownWithFrontMatter(foundArticle.markdownContent || foundArticle.content || '');
+          
+          // Bereinige Titel und Content
+          const cleanTitle = cleanArticleTitle(metadata.title || foundArticle.title);
+          const cleanContent = cleanArticleContent(content);
+          
+          // Validiere Content
+          const validation = validateArticleContent(cleanContent);
+          
+          if (!validation.isValid) {
+            console.warn('Content-Validierung fehlgeschlagen:', validation.issues);
+          }
+          
+          // Erstelle bereinigten Artikel
+          const processedArticle = {
+            ...foundArticle,
+            title: cleanTitle,
+            markdownContent: cleanContent, // NUR der bereinigte Content ohne YAML
+            metadata: {
+              ...foundArticle.metadata,
+              ...metadata,
+              wordCount: validation.wordCount,
+              readingTime: Math.max(1, Math.ceil(validation.wordCount / 200))
+            },
+            contentValidation: validation
+          };
+          
+          setArticle(processedArticle);
           setArticle(foundArticle);
         } else {
           setError('Artikel nicht gefunden');
@@ -132,6 +162,10 @@ Die Decke der Zivilisation ist viel dünner, als man sich das in Friedenszeiten 
     );
   }
 
+  // Debug-Informationen (nur in Development)
+  if (process.env.NODE_ENV === 'development' && article.contentValidation && !article.contentValidation.isValid) {
+    console.warn('Content-Validierung:', article.contentValidation);
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -158,7 +192,7 @@ Die Decke der Zivilisation ist viel dünner, als man sich das in Friedenszeiten 
         <article className="bg-white rounded-lg shadow-sm p-8">
           {/* Artikel-Header */}
           <header className="mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-6 leading-tight">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight">
               {article.title}
             </h1>
             
@@ -183,12 +217,12 @@ Die Decke der Zivilisation ist viel dünner, als man sich das in Friedenszeiten 
               
               <div className="flex items-center">
                 <Clock className="w-4 h-4 mr-2" />
-                <span>{article.readingTime} Min. Lesezeit</span>
+                <span>{article.metadata?.readingTime || article.readingTime} Min. Lesezeit</span>
               </div>
               
               <div className="flex items-center">
                 <Tag className="w-4 h-4 mr-2" />
-                <span>{article.wordCount} Wörter</span>
+                <span>{article.metadata?.wordCount || article.wordCount} Wörter</span>
               </div>
             </div>
             
@@ -207,6 +241,17 @@ Die Decke der Zivilisation ist viel dünner, als man sich das in Friedenszeiten 
             )}
           </header>
 
+          {/* Content-Validierung Warnung (nur in Development) */}
+          {process.env.NODE_ENV === 'development' && article.contentValidation && !article.contentValidation.isValid && (
+            <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <h3 className="text-yellow-800 font-medium mb-2">Content-Validierung fehlgeschlagen:</h3>
+              <ul className="text-yellow-700 text-sm">
+                {article.contentValidation.issues.map((issue, index) => (
+                  <li key={index}>• {issue}</li>
+                ))}
+              </ul>
+            </div>
+          )}
           {/* Markdown-Content */}
           <div className="prose prose-lg max-w-none">
             <MarkdownRenderer 

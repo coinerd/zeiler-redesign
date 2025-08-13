@@ -10,6 +10,19 @@ import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
  * Unterstützt GitHub Flavored Markdown, Syntax-Highlighting und benutzerdefinierte Styling
  */
 const MarkdownRenderer = ({ content, className = "" }) => {
+  // Prüfe ob Content vorhanden ist
+  if (!content || content.trim().length === 0) {
+    return (
+      <div className="text-center py-8 text-gray-500">
+        <p>Kein Artikel-Content verfügbar.</p>
+      </div>
+    );
+  }
+
+  // Debug: Prüfe auf YAML Front Matter im Content (sollte nicht da sein)
+  if (process.env.NODE_ENV === 'development' && content.includes('---') && content.includes('title:')) {
+    console.error('YAML Front Matter im Content gefunden - Parser-Fehler!', content.substring(0, 200));
+  }
   // Custom Components für verschiedene Markdown-Elemente
   const components = {
     // Blockquotes mit spezieller Styling
@@ -28,7 +41,7 @@ const MarkdownRenderer = ({ content, className = "" }) => {
     
     // Überschriften mit konsistenter Styling
     h1: ({ children }) => (
-      <h1 className="text-4xl font-bold text-gray-900 mb-8 leading-tight">
+      <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 leading-tight">
         {children}
       </h1>
     ),

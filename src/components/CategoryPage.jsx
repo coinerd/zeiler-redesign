@@ -14,67 +14,43 @@ const CategoryPage = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    console.log('CategoryPage: Filtering articles for category:', category)
-    console.log('CategoryPage: Available articles:', articles.length)
-    console.log('CategoryPage: All articles:', articles)
-    
     // Filtere Artikel nach Kategorie - verwende die korrekte Logik
     const filteredArticles = articles.filter(article => {
-      // Debug: Log article details
-      console.log('Checking article:', {
-        id: article.id,
-        title: article.title,
-        author: article.author,
-        category: article.category,
-        url: article.url,
-        display_url: article.display_url
-      })
-      
       // Filtere basierend auf der Kategorie
       if (category === 'detlef') {
         const isDetlefAuthor = article.author === 'Detlef Zeiler'
         const isDetlefURL = article.url.toLowerCase().includes('/detlef/')
         const isDetlefCategory = article.category === 'detlef'
-        console.log('Detlef check:', { isDetlefAuthor, isDetlefURL, isDetlefCategory })
         return isDetlefAuthor || isDetlefURL || isDetlefCategory
       } else if (category === 'julian') {
         const isJulianAuthor = article.author === 'Julian Zeiler'
         const isJulianURL = article.url.toLowerCase().includes('/julian/')
         const isJulianCategory = article.category === 'julian'
-        console.log('Julian check:', { isJulianAuthor, isJulianURL, isJulianCategory })
         return isJulianAuthor || isJulianURL || isJulianCategory
       } else if (category === 'geschichte') {
         const isGeschichteCategory = article.category === 'geschichte'
         const isGeschichteURL = article.url.toLowerCase().includes('/geschichte/')
-        console.log('Geschichte check:', { isGeschichteCategory, isGeschichteURL })
         return isGeschichteCategory || isGeschichteURL
       } else if (category === 'projekte') {
         const isProjekteCategory = article.category === 'projekte'
         const isProjekteURL = article.url.toLowerCase().includes('/projekte/')
-        console.log('Projekte check:', { isProjekteCategory, isProjekteURL })
         return isProjekteCategory || isProjekteURL
       } else if (category === 'medien') {
         const isMedienCategory = article.category === 'medien'
         const isMedienURL = article.url.toLowerCase().includes('/medien/')
-        console.log('Medien check:', { isMedienCategory, isMedienURL })
         return isMedienCategory || isMedienURL
       } else if (category === 'deutsch') {
         const isDeutschCategory = article.category === 'deutsch'
         const isDeutschURL = article.url.toLowerCase().includes('/deutsch/')
-        console.log('Deutsch check:', { isDeutschCategory, isDeutschURL })
         return isDeutschCategory || isDeutschURL
       } else if (category === 'techzap') {
         const isTechzapCategory = article.category === 'techzap'
         const isTechzapURL = article.url.toLowerCase().includes('/techzap/')
-        console.log('Techzap check:', { isTechzapCategory, isTechzapURL })
         return isTechzapCategory || isTechzapURL
       }
       
-      console.log('No category match for:', category)
       return false
     })
-    
-    console.log('CategoryPage: Filtered articles:', filteredArticles.length, filteredArticles)
     
     setCategoryArticles(filteredArticles)
     setLoading(false)

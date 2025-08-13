@@ -16,35 +16,61 @@ const CategoryPage = () => {
   useEffect(() => {
     console.log('CategoryPage: Filtering articles for category:', category)
     console.log('CategoryPage: Available articles:', articles.length)
+    console.log('CategoryPage: All articles:', articles)
     
     // Filtere Artikel nach Kategorie - verwende die korrekte Logik
     const filteredArticles = articles.filter(article => {
       // Debug: Log article details
-      console.log('Article:', {
+      console.log('Checking article:', {
         id: article.id,
         title: article.title,
         author: article.author,
         category: article.category,
-        url: article.url
+        url: article.url,
+        display_url: article.display_url
       })
       
       // Filtere basierend auf der Kategorie
       if (category === 'detlef') {
-        return article.author === 'Detlef Zeiler' || article.url.toLowerCase().includes('/detlef/')
+        const isDetlefAuthor = article.author === 'Detlef Zeiler'
+        const isDetlefURL = article.url.toLowerCase().includes('/detlef/')
+        const isDetlefCategory = article.category === 'detlef'
+        console.log('Detlef check:', { isDetlefAuthor, isDetlefURL, isDetlefCategory })
+        return isDetlefAuthor || isDetlefURL || isDetlefCategory
       } else if (category === 'julian') {
-        return article.author === 'Julian Zeiler' || article.url.toLowerCase().includes('/julian/')
+        const isJulianAuthor = article.author === 'Julian Zeiler'
+        const isJulianURL = article.url.toLowerCase().includes('/julian/')
+        const isJulianCategory = article.category === 'julian'
+        console.log('Julian check:', { isJulianAuthor, isJulianURL, isJulianCategory })
+        return isJulianAuthor || isJulianURL || isJulianCategory
       } else if (category === 'geschichte') {
-        return article.category === 'geschichte' || article.url.toLowerCase().includes('/geschichte/')
+        const isGeschichteCategory = article.category === 'geschichte'
+        const isGeschichteURL = article.url.toLowerCase().includes('/geschichte/')
+        console.log('Geschichte check:', { isGeschichteCategory, isGeschichteURL })
+        return isGeschichteCategory || isGeschichteURL
       } else if (category === 'projekte') {
-        return article.category === 'projekte' || article.url.toLowerCase().includes('/projekte/')
+        const isProjekteCategory = article.category === 'projekte'
+        const isProjekteURL = article.url.toLowerCase().includes('/projekte/')
+        console.log('Projekte check:', { isProjekteCategory, isProjekteURL })
+        return isProjekteCategory || isProjekteURL
       } else if (category === 'medien') {
-        return article.category === 'medien' || article.url.toLowerCase().includes('/medien/')
+        const isMedienCategory = article.category === 'medien'
+        const isMedienURL = article.url.toLowerCase().includes('/medien/')
+        console.log('Medien check:', { isMedienCategory, isMedienURL })
+        return isMedienCategory || isMedienURL
       } else if (category === 'deutsch') {
-        return article.category === 'deutsch' || article.url.toLowerCase().includes('/deutsch/')
+        const isDeutschCategory = article.category === 'deutsch'
+        const isDeutschURL = article.url.toLowerCase().includes('/deutsch/')
+        console.log('Deutsch check:', { isDeutschCategory, isDeutschURL })
+        return isDeutschCategory || isDeutschURL
       } else if (category === 'techzap') {
-        return article.category === 'techzap' || article.url.toLowerCase().includes('/techzap/')
+        const isTechzapCategory = article.category === 'techzap'
+        const isTechzapURL = article.url.toLowerCase().includes('/techzap/')
+        console.log('Techzap check:', { isTechzapCategory, isTechzapURL })
+        return isTechzapCategory || isTechzapURL
       }
       
+      console.log('No category match for:', category)
       return false
     })
     
@@ -165,7 +191,11 @@ const CategoryPage = () => {
 
         {/* Articles Grid */}
         {categoryArticles.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <>
+            <div className="mb-4 text-sm text-gray-600">
+              Zeige {categoryArticles.length} von {articles.length} Artikeln für Kategorie "{category}"
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {categoryArticles.map((article) => (
               <ArticleCard 
                 key={article.id} 
@@ -177,11 +207,12 @@ const CategoryPage = () => {
                 image={article.images && article.images.length > 0 ? `/src/assets/${article.images[0]}` : null}
               />
             ))}
-          </div>
+            </div>
+          </>
         ) : (
           <div className="bg-white rounded-lg shadow-sm border p-8 text-center">
             <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              Keine Artikel gefunden
+              Keine Artikel in Kategorie "{category}" gefunden
             </h2>
             <p className="text-gray-600">
               In dieser Kategorie sind derzeit keine Artikel verfügbar.

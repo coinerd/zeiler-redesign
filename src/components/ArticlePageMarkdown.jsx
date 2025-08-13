@@ -113,7 +113,7 @@ Was Tocqueville hier selbstkritisch und reflektiert beschreibt, das wiederholt s
 Die Decke der Zivilisation ist viel dünner, als man sich das in Friedenszeiten vorstellen mag. Schlimmer als ein plötzlicher Ausbruch von Gewalt, der danach reflektiert wird, ist aber die allmähliche Gewöhnung an verdeckte Gewalt, wie sie sich heute abzuzeichnen scheint.`,
         images: [
           {
-            src: '/src/assets/tocqueville_portrait_531.jpg',
+            src: 'tocqueville_portrait_531.jpg',
             alt: 'Portrait von Alexis de Tocqueville'
           }
         ]
@@ -122,6 +122,28 @@ Die Decke der Zivilisation ist viel dünner, als man sich das in Friedenszeiten 
     
     return null;
   };
+
+  // Hilfsfunktion für Bild-Pfad-Auflösung
+  const resolveImageSrc = (imagePath) => {
+    if (!imagePath) return ''
+    
+    // If already a full URL, return as-is
+    if (/^https?:/i.test(imagePath)) return imagePath
+    
+    // Handle local asset paths
+    if (imagePath.startsWith('/src/assets/')) {
+      return imagePath
+    }
+    
+    // Handle relative paths
+    if (imagePath.startsWith('./assets/') || imagePath.startsWith('assets/')) {
+      const filename = imagePath.replace(/^\.?\/assets\//, '')
+      return `/src/assets/${filename}`
+    }
+    
+    // Default: assume it's a filename in assets
+    return `/src/assets/${imagePath}`
+  }
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -247,13 +269,13 @@ Die Decke der Zivilisation ist viel dünner, als man sich das in Friedenszeiten 
                 <figure key={index} className="mb-6">
                   <div className="flex justify-center">
                     <img 
-                      src={image.src} 
+                      src={resolveImageSrc(image.src)} 
                       alt={image.alt || `Bild ${index + 1} zu ${article.title}`}
                       className="max-w-full h-auto rounded-lg shadow-lg border"
                       style={{ maxHeight: '500px', objectFit: 'contain' }}
                       loading="lazy"
                       onError={(e) => {
-                        console.warn(`Bild konnte nicht geladen werden: ${image.src}`);
+                        console.warn(`Bild konnte nicht geladen werden: ${resolveImageSrc(image.src)}`);
                         // Show placeholder instead of hiding
                         e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZiNzI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkJpbGQgbmljaHQgdmVyZsO8Z2JhcjwvdGV4dD48L3N2Zz4='
                         e.target.alt = 'Bild nicht verfügbar'

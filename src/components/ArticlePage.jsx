@@ -72,18 +72,23 @@ const ArticlePage = () => {
   const resolveImageSrc = (imagePath) => {
     if (!imagePath) return ''
     
-    // Handle different image path formats
-    let src = typeof imagePath === 'string' ? imagePath : imagePath.src
-    if (!src) return ''
+    // Handle different image path formats - support both string and object
+    let src
+    if (typeof imagePath === 'string') {
+      src = imagePath
+    } else if (typeof imagePath === 'object' && imagePath.src) {
+      src = imagePath.src
+    } else {
+      console.warn('Invalid image path format:', imagePath)
+      return ''
+    }
     
     // If already a full URL, return as-is
     if (/^https?:/i.test(src)) return src
     
     // Handle local asset paths
     if (src.startsWith('/src/assets/')) {
-      // Convert to proper asset path for Vite
-      const filename = src.replace('/src/assets/', '')
-      return `/src/assets/${filename}`
+      return src
     }
     
     // Handle relative paths
@@ -106,19 +111,20 @@ const ArticlePage = () => {
             <div className="flex justify-center">
               <img
                 src={resolveImageSrc(image)}
-                alt={typeof image === 'object' && image.alt ? image.alt : `Bild ${index + 1} zu ${article.title}`}
+                alt={typeof image === 'object' && image.alt ? image.alt : typeof image === 'string' ? `Bild ${index + 1} zu ${article.title}` : image.alt || `Bild ${index + 1} zu ${article.title}`}
                 className="max-w-full h-auto rounded-lg shadow-lg border"
                 style={{ maxHeight: '500px', objectFit: 'contain' }}
                 loading="lazy"
                 onError={(e) => {
-                  console.error('Fehler beim Laden des Bildes:', resolveImageSrc(image))
+                  const imageSrc = resolveImageSrc(image)
+                  console.error('Fehler beim Laden des Bildes:', imageSrc, 'Original:', image)
                   // Show placeholder instead of hiding
                   e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZiNzI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkJpbGQgbmljaHQgdmVyZsO8Z2JhcjwvdGV4dD48L3N2Zz4='
                   e.target.alt = 'Bild nicht verfügbar'
                 }}
               />
             </div>
-            {typeof image === 'object' && image.alt && (
+            {(typeof image === 'object' && image.alt) && (
               <figcaption className="text-sm text-gray-600 text-center mt-3 italic">
                 {image.alt}
               </figcaption>
@@ -233,7 +239,12 @@ const ArticlePage = () => {
           </header>
 
           {/* Bilder anzeigen - vor dem Content für bessere Integration */}
-          {renderImages(article.images)}
+          {article.images && article.images.length > 0 && (
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Bilder</h3>
+              {renderImages(article.images)}
+            </div>
+          )}
 
           {/* Artikelinhalt mit verbessertem Paragraph-Rendering */}
           <div className="prose prose-lg max-w-none">

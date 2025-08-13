@@ -10,23 +10,29 @@ import ArticlePageMarkdown from './components/ArticlePageMarkdown.jsx'
 import CategoryPage from './components/CategoryPage.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import { Search, BookOpen, Code, History, Users } from 'lucide-react'
-import { articles, searchArticles } from './data/articles.js'
+import { articles } from './data/articles.js'
 import './App.css'
 
 function HomePage() {
+  // Search functionality moved to HomePage only
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState([])
-
-  // Reset search when component mounts (when navigating back to homepage)
-  React.useEffect(() => {
-    setSearchTerm('')
-    setSearchResults([])
-  }, [])
 
   const handleSearch = (term) => {
     setSearchTerm(term)
     if (term.trim()) {
-      setSearchResults(searchArticles(term))
+      const results = articles.filter(article => {
+        const searchableText = [
+          article.title,
+          article.excerpt,
+          article.content,
+          article.author,
+          article.category
+        ].join(' ').toLowerCase();
+        
+        return searchableText.includes(term.toLowerCase());
+      });
+      setSearchResults(results)
     } else {
       setSearchResults([])
     }
@@ -64,7 +70,7 @@ function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
+      <Header onSearch={handleSearch} searchTerm={searchTerm} />
       
       <main>
         {/* Hero Section */}
@@ -81,20 +87,6 @@ function HomePage() {
                 Herzlich Willkommen auf den Seiten von Detlef und Julian Zeiler. 
                 Hier finden Sie einige Artikel die mein Vater Detlef und ich im Laufe der Zeit geschrieben haben.
               </p>
-              
-              {/* Search Bar */}
-              <div className="max-w-md mx-auto relative">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                  <input
-                    type="text"
-                    placeholder="Artikel durchsuchen..."
-                    value={searchTerm}
-                    onChange={(e) => handleSearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                  />
-                </div>
-              </div>
             </div>
           </div>
         </section>

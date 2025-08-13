@@ -3,9 +3,30 @@ import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, Search, Home, User, BookOpen, Code, History } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 
-const Header = () => {
+const Header = ({ onSearch, searchTerm }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm || '')
   const location = useLocation()
+  
+  // Update local search term when prop changes
+  React.useEffect(() => {
+    setLocalSearchTerm(searchTerm || '')
+  }, [searchTerm])
+  
+  // Clear search when not on homepage
+  React.useEffect(() => {
+    if (location.pathname !== '/' && location.hash !== '#/') {
+      setLocalSearchTerm('')
+    }
+  }, [location])
+  
+  const handleSearchChange = (e) => {
+    const value = e.target.value
+    setLocalSearchTerm(value)
+    if (onSearch && (location.pathname === '/' || location.hash === '#/')) {
+      onSearch(value)
+    }
+  }
 
   const navigationItems = [
     { name: 'Startseite', to: '/', icon: Home },
@@ -49,9 +70,21 @@ const Header = () => {
 
           {/* Search and Mobile Menu */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="sm" className="hidden sm:flex">
-              <Search size={16} />
-            </Button>
+            {/* Search Bar - only show on homepage */}
+            {(location.pathname === '/' || location.hash === '#/') && (
+              <div className="hidden sm:flex relative">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                  <input
+                    type="text"
+                    placeholder="Suchen..."
+                    value={localSearchTerm}
+                    onChange={handleSearchChange}
+                    className="w-64 pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            )}
             
             {/* Mobile menu button */}
             <Button
@@ -87,6 +120,22 @@ const Header = () => {
                   </Link>
                 )
               })}
+              
+              {/* Mobile Search - only show on homepage */}
+              {(location.pathname === '/' || location.hash === '#/') && (
+                <div className="px-3 py-2">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                    <input
+                      type="text"
+                      placeholder="Artikel durchsuchen..."
+                      value={localSearchTerm}
+                      onChange={handleSearchChange}
+                      className="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

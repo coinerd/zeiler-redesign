@@ -113,9 +113,8 @@ Was Tocqueville hier selbstkritisch und reflektiert beschreibt, das wiederholt s
 Die Decke der Zivilisation ist viel dünner, als man sich das in Friedenszeiten vorstellen mag. Schlimmer als ein plötzlicher Ausbruch von Gewalt, der danach reflektiert wird, ist aber die allmähliche Gewöhnung an verdeckte Gewalt, wie sie sich heute abzuzeichnen scheint.`,
         images: [
           {
-            filename: 'tocqueville_portrait.jpg',
-            alt_text: 'Portrait von Alexis de Tocqueville',
-            local_path: '/src/assets/tocqueville_portrait.jpg'
+            src: '/src/assets/tocqueville_portrait_531.jpg',
+            alt: 'Portrait von Alexis de Tocqueville'
           }
         ]
       };

@@ -7,9 +7,6 @@ import { getArticleByUrl } from '../data/articles.js'
 import { Calendar, User, ArrowLeft, Clock, Tag } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 
-// Alle lokal verfügbaren Bilder einmalig importieren
-const imageAssets = import.meta.glob('../assets/*', { eager: true, as: 'url' })
-
 const ArticlePage = () => {
   const { '*': urlPath } = useParams()
   const [article, setArticle] = useState(null)
@@ -72,12 +69,31 @@ const ArticlePage = () => {
     })
   }
 
-  const resolveImageSrc = (img) => {
-    const src = typeof img === 'string' ? img : img.src
+  const resolveImageSrc = (imagePath) => {
+    if (!imagePath) return ''
+    
+    // Handle different image path formats
+    let src = typeof imagePath === 'string' ? imagePath : imagePath.src
     if (!src) return ''
+    
+    // If already a full URL, return as-is
     if (/^https?:/i.test(src)) return src
-    const file = src.replace(/^.*assets\//, '')
-    return imageAssets[`../assets/${file}`] || src
+    
+    // Handle local asset paths
+    if (src.startsWith('/src/assets/')) {
+      // Convert to proper asset path for Vite
+      const filename = src.replace('/src/assets/', '')
+      return `/src/assets/${filename}`
+    }
+    
+    // Handle relative paths
+    if (src.startsWith('./assets/') || src.startsWith('assets/')) {
+      const filename = src.replace(/^\.?\/assets\//, '')
+      return `/src/assets/${filename}`
+    }
+    
+    // Default: assume it's a filename in assets
+    return `/src/assets/${src}`
   }
 
   const renderImages = (images) => {
@@ -95,8 +111,10 @@ const ArticlePage = () => {
                 style={{ maxHeight: '500px', objectFit: 'contain' }}
                 loading="lazy"
                 onError={(e) => {
-                  console.error('Fehler beim Laden des Bildes:', image)
-                  e.target.style.display = 'none'
+                  console.error('Fehler beim Laden des Bildes:', resolveImageSrc(image))
+                  // Show placeholder instead of hiding
+                  e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZiNzI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkJpbGQgbmljaHQgdmVyZsO8Z2JhcjwvdGV4dD48L3N2Zz4='
+                  e.target.alt = 'Bild nicht verfügbar'
                 }}
               />
             </div>

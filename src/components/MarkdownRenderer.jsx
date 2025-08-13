@@ -90,25 +90,51 @@ const MarkdownRenderer = ({ content, className = "" }) => {
     ),
     
     // Bilder mit responsivem Design
-    img: ({ src, alt }) => (
-      <div className="my-8 text-center">
-        <img 
-          src={src} 
-          alt={alt || "Artikel-Bild"} 
-          className="max-w-full h-auto rounded-lg shadow-lg mx-auto"
-          loading="lazy"
-          onError={(e) => {
-            e.target.style.display = 'none';
-            console.warn(`Bild konnte nicht geladen werden: ${src}`);
-          }}
-        />
-        {alt && (
-          <p className="text-sm text-gray-500 mt-2 italic">
-            {alt}
-          </p>
-        )}
-      </div>
-    ),
+    img: ({ src, alt }) => {
+      const resolveImageSrc = (imagePath) => {
+        if (!imagePath) return ''
+        
+        // If already a full URL, return as-is
+        if (/^https?:/i.test(imagePath)) return imagePath
+        
+        // Handle local asset paths
+        if (imagePath.startsWith('/src/assets/')) {
+          return imagePath
+        }
+        
+        // Handle relative paths
+        if (imagePath.startsWith('./assets/') || imagePath.startsWith('assets/')) {
+          const filename = imagePath.replace(/^\.?\/assets\//, '')
+          return `/src/assets/${filename}`
+        }
+        
+        // Default: assume it's a filename in assets
+        return `/src/assets/${imagePath}`
+      }
+      
+      return (
+        <div className="my-8 text-center">
+          <img 
+            src={resolveImageSrc(src)} 
+            alt={alt || "Artikel-Bild"} 
+            className="max-w-full h-auto rounded-lg shadow-lg mx-auto"
+            style={{ maxHeight: '600px', objectFit: 'contain' }}
+            loading="lazy"
+            onError={(e) => {
+              console.warn(`Bild konnte nicht geladen werden: ${src}`);
+              // Show placeholder instead of hiding
+              e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZiNzI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkJpbGQgbmljaHQgdmVyZsO8Z2JhcjwvdGV4dD48L3N2Zz4='
+              e.target.alt = 'Bild nicht verfügbar'
+            }}
+          />
+          {alt && (
+            <p className="text-sm text-gray-500 mt-2 italic">
+              {alt}
+            </p>
+          )}
+        </div>
+      )
+    },
     
     // Code-Blöcke mit Syntax-Highlighting
     code: ({ node, inline, className, children, ...props }) => {

@@ -29,7 +29,7 @@ const ArticlePage = () => {
 
     paragraphs.forEach(paragraph => {
       let text = paragraph.trim()
-      const quoteRegex = /[„"][^“”"]+[“"]/
+      const quoteRegex = /[„"][^"""]+[""]/
       let match
 
       while ((match = quoteRegex.exec(text)) !== null) {
@@ -196,6 +196,8 @@ const ArticlePage = () => {
       breadcrumbs.push({ name, href });
     }
     
+    return breadcrumbs;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

@@ -171,6 +171,7 @@ def generate_test_articles():
             "word_count": 223,
             "reading_time": 1
         }
+    ]
         
     return test_articles
 

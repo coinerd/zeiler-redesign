@@ -14,10 +14,6 @@ def clean_title(title):
     if not title:
         return 'Unbekannter Titel'
     
-    # Remove redundant prefixes
-    cleaned = title
-    prefixes_to_remove = [
-        'ZEILER.me - IT & Medien, Geschichte, Deutsch - ',
         'ZEILER.me - ',
         'IT & Medien, Geschichte, Deutsch - '
     ]
@@ -62,10 +58,6 @@ def generate_test_articles():
             "reading_time": 1
         },
         {
-            "id": 3,
-            "title": "Die Reformation in der Kurpfalz",
-            "excerpt": "Wie die Reformation das religiöse und politische Leben in der Kurpfalz veränderte.",
-            "content": """Die Reformation hatte tiefgreifende Auswirkungen auf die Kurpfalz und ihre Hauptstadt Heidelberg. Kurfürst Friedrich II. führte 1546 die Reformation ein und machte die Kurpfalz zu einem der wichtigsten protestantischen Territorien im Reich.
             "url": "/detlef/geschichte/reformation-kurpfalz",
             "display_url": "/#/detlef/geschichte/reformation-kurpfalz",
             "images": [],
@@ -83,24 +75,10 @@ def generate_test_articles():
             "excerpt": "Herausforderungen und Chancen der Medienerziehung im Zeitalter von Internet und sozialen Medien.",
             "content": """Die Medienerziehung steht heute vor völlig neuen Herausforderungen. Während früher hauptsächlich Fernsehen, Radio und Printmedien im Fokus standen, müssen wir heute Kinder und Jugendliche auf eine komplexe digitale Medienwelt vorbereiten.
             "url": "/detlef/medien/medienerziehung-digital",
-            "display_url": "/#/detlef/medien/medienerziehung-digital",
-            "images": [],
-            "author": "Detlef Zeiler",
-            "category": "medien",
-            "scraped_url": "https://www.zeiler.me/detlef/medien/medienerziehung-digital",
-            "word_count": 178,
-            "reading_time": 1
-        },
-        {
-            "id": 5,
             "title": "Fake News erkennen und bewerten",
             "excerpt": "Strategien und Methoden zur Identifikation von Falschinformationen in digitalen Medien.",
             "content": """In der heutigen Informationsgesellschaft ist die Fähigkeit, Fake News zu erkennen, zu einer Schlüsselkompetenz geworden. Falschinformationen verbreiten sich in sozialen Medien oft schneller als seriöse Nachrichten.
             "url": "/detlef/medien/fake-news-erkennen",
-            "display_url": "/#/detlef/medien/fake-news-erkennen",
-            "images": [],
-            "author": "Detlef Zeiler",
-            "category": "medien",
             "scraped_url": "https://www.zeiler.me/detlef/medien/fake-news-erkennen",
             "word_count": 201,
             "reading_time": 1
@@ -132,14 +110,7 @@ def generate_test_articles():
             "scraped_url": "https://www.zeiler.me/julian/techzap/react-hooks",
             "word_count": 198,
             "reading_time": 1
-        },
-            "content": """Die Administration von Linux-Servern erfordert Kenntnisse verschiedener Befehle und Konzepte.
-            "url": "/julian/techzap/linux-server-admin",
-            "display_url": "/#/julian/techzap/linux-server-admin",
-            "images": [],
             "author": "Julian Zeiler",
-            "category": "techzap",
-            "id": 10,
             "content": """CSS Grid ist ein mächtiges Layout-System, das zweidimensionale Layouts ermöglicht und Flexbox perfekt ergänzt.
             "url": "/julian/techzap/css-grid-layout",
             "display_url": "/#/julian/techzap/css-grid-layout",

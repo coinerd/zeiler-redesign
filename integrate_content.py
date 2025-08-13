@@ -223,17 +223,47 @@ def generate_test_articles():
     # Generate test articles
     processed_articles = generate_test_articles()
 
+    # Convert articles to JavaScript format with proper escaping
+    articles_js = "[\n"
+    for i, article in enumerate(processed_articles):
+        if i > 0:
+            articles_js += ",\n"
+        
+        # Escape quotes and newlines in content
+        content = article['content'].replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')
+        title = article['title'].replace('\\', '\\\\').replace('"', '\\"')
+        excerpt = article['excerpt'].replace('\\', '\\\\').replace('"', '\\"')
+        
+        articles_js += f"""  {{
+    "id": {article['id']},
+    "title": "{title}",
+    "excerpt": "{excerpt}",
+    "content": "{content}",
+    "url": "{article['url']}",
+    "display_url": "{article['display_url']}",
+    "images": {json.dumps(article['images'])},
+    "author": "{article['author']}",
+    "category": "{article['category']}",
+    "scraped_url": "{article['scraped_url']}",
+    "word_count": {article['word_count']},
+    "reading_time": {article['reading_time']}
+  }}"""
+    
+    articles_js += "\n];"
+
     js_content = f"""// Generated at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
+export const articles = {articles_js}
+
 // Suchfunktion
-export function searchArticles(query) {{
-  if (!query || query.trim().length < 2) {{
+export function searchArticles(query) {
+  if (!query || query.trim().length < 2) {
     return articles;
-  }}
+  }
   
   const searchTerm = query.toLowerCase().trim();
   
-  return articles.filter(article => {{
+  return articles.filter(article => {
     const searchableText = [
       article.title,
       article.excerpt,
@@ -243,17 +273,17 @@ export function searchArticles(query) {{
     ].join(' ').toLowerCase();
     
     return searchableText.includes(searchTerm);
-  }});
-}}
+  });
+}
 
 // Artikel nach URL finden
-export function getArticleByUrl(url) {{
+export function getArticleByUrl(url) {
   if (!url) return null;
   
   // Normalisiere URL
   const normalizedUrl = url.replace(/^\/+|\/+$/g, '').toLowerCase();
   
-  return articles.find(article => {{
+  return articles.find(article => {
     const articleUrl = article.url.replace(/^\/+|\/+$/g, '').toLowerCase();
     const displayUrl = article.display_url.replace(/^\/+|#+\/+|\/+$/g, '').toLowerCase();
     
@@ -261,22 +291,22 @@ export function getArticleByUrl(url) {{
            displayUrl === normalizedUrl ||
            articleUrl.endsWith(normalizedUrl) ||
            displayUrl.endsWith(normalizedUrl);
-  }}) || null;
-}}
+  }) || null;
+}
 
 // Artikel nach Kategorie
-export function getArticlesByCategory(category) {{
+export function getArticlesByCategory(category) {
   return articles.filter(article => article.category === category);
-}}
+}
 
 // Statistiken
-export const articleStats = {{
+export const articleStats = {
   total: articles.length,
   categories: [...new Set(articles.map(a => a.category))],
   authors: [...new Set(articles.map(a => a.author))],
   totalWords: articles.reduce((sum, a) => sum + a.word_count, 0),
   averageReadingTime: Math.round(articles.reduce((sum, a) => sum + a.reading_time, 0) / articles.length)
-}};
+};
 """
     
     # Create directory if it doesn't exist
@@ -284,11 +314,16 @@ export const articleStats = {{
     if not os.path.exists(src_data_dir):
         os.makedirs(src_data_dir)
     
+    output_file = os.path.join(src_data_dir, 'articles_comprehensive.js')
+    
+    try:
+        with open(output_file, 'w', encoding='utf-8') as f:
+            f.write(js_content)
+        print(f"✅ Generated {output_file} successfully!")
+        return True
     except Exception as e:
         print(f"❌ Error writing {output_file}: {e}")
         return False
-    
-    return True
 
 if __name__ == '__main__':
     print("🚀 Generating comprehensive test articles...")

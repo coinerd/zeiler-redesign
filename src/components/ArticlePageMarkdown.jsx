@@ -240,6 +240,36 @@ Die Decke der Zivilisation ist viel dünner, als man sich das in Friedenszeiten 
             )}
           </header>
 
+          {/* Article Images */}
+          {article.images && article.images.length > 0 && (
+            <div className="mb-8">
+              {article.images.map((image, index) => (
+                <figure key={index} className="mb-6">
+                  <div className="flex justify-center">
+                    <img 
+                      src={image.src} 
+                      alt={image.alt || `Bild ${index + 1} zu ${article.title}`}
+                      className="max-w-full h-auto rounded-lg shadow-lg border"
+                      style={{ maxHeight: '500px', objectFit: 'contain' }}
+                      loading="lazy"
+                      onError={(e) => {
+                        console.warn(`Bild konnte nicht geladen werden: ${image.src}`);
+                        // Show placeholder instead of hiding
+                        e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZiNzI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkJpbGQgbmljaHQgdmVyZsO8Z2JhcjwvdGV4dD48L3N2Zz4='
+                        e.target.alt = 'Bild nicht verfügbar'
+                      }}
+                    />
+                  </div>
+                  {image.alt && (
+                    <figcaption className="text-sm text-gray-600 text-center mt-3 italic">
+                      {image.alt}
+                    </figcaption>
+                  )}
+                </figure>
+              ))}
+            </div>
+          )}
+
           {/* Content-Validierung Warnung (nur in Development) */}
           {process.env.NODE_ENV === 'development' && article.contentValidation && !article.contentValidation.isValid && (
             <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
@@ -284,4 +314,3 @@ Die Decke der Zivilisation ist viel dünner, als man sich das in Friedenszeiten 
 };
 
 export default ArticlePageMarkdown;
-

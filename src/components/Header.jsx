@@ -1,3 +1,4 @@
+import React from 'react'
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, Search, Home, User, BookOpen, Code, History } from 'lucide-react'

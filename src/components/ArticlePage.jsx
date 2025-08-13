@@ -10,7 +10,7 @@ import { Calendar, User, ArrowLeft, Clock, Tag } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 
 // Alle lokal verfügbaren Bilder einmalig importieren
-const imageAssets = import.meta.glob('../assets/*', { eager: true, as: 'url' })
+const imageAssets = import.meta.glob('../assets/*', { eager: true, query: '?url', import: 'default' })
 
 const ArticlePage = () => {
   const { '*': urlPath } = useParams()

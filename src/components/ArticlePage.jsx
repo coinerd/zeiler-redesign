@@ -7,7 +7,7 @@ import { getArticleByUrl } from '../data/articles.js'
 import { Calendar, User, ArrowLeft, Clock, Tag } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 
-const ArticlePage = () => {
+function ArticlePage() {
   const { '*': urlPath } = useParams()
   const [article, setArticle] = useState(null)
   const [loading, setLoading] = useState(true)

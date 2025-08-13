@@ -132,10 +132,6 @@ def generate_test_articles():
     
     # Generate test articles
     processed_articles = generate_test_articles()
-    
-    # Generate JavaScript file content
-    js_content = f"""// Generiert am: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-// Umfassende Test-Artikel-Datenbank für das Zeiler-Redesign
 
 export const articles = {json.dumps(processed_articles, ensure_ascii=False, indent=2)};
 
@@ -180,10 +176,6 @@ export function getArticleByUrl(url) {{
 
 // Artikel nach Kategorie
 export function getArticlesByCategory(category) {{
-  return articles.filter(article => article.category === category);
-}}
-
-// Statistiken
 export const articleStats = {{
   total: articles.length,
   categories: [...new Set(articles.map(a => a.category))],
@@ -201,24 +193,10 @@ export const articleStats = {{
     # Write to file
     output_file = os.path.join(src_data_dir, 'articles_comprehensive.js')
     
-    try:
-        with open(output_file, 'w', encoding='utf-8') as f:
-            f.write(js_content)
-        
-        print(f"✅ Successfully generated {output_file}")
-        print(f"📊 Generated {len(processed_articles)} comprehensive test articles")
-        print(f"📝 Total words: {sum(a['word_count'] for a in processed_articles):,}")
-        
-        # Show category breakdown
-        category_counts = {}
         for article in processed_articles:
             cat = article['category']
             category_counts[cat] = category_counts.get(cat, 0) + 1
         
-        print("📂 Categories:")
-        for cat, count in sorted(category_counts.items()):
-            print(f"   {cat}: {count} articles")
-            
     except Exception as e:
         print(f"❌ Error writing {output_file}: {e}")
         return False

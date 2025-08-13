@@ -66,26 +66,26 @@ def generate_test_articles():
             "author": "Detlef Zeiler",
             "category": "geschichte",
             "scraped_url": "https://www.zeiler.me/detlef/geschichte/reformation-kurpfalz",
-            "word_count": 156,
-            "reading_time": 1
-        },
-        
-        # Detlef - Medien
-        {
-            "id": 4,
-            "title": "Medienerziehung in der digitalen Welt",
-            "excerpt": "Herausforderungen und Chancen der Medienerziehung im Zeitalter von Internet und sozialen Medien.",
-            "content": """Die Medienerziehung steht heute vor völlig neuen Herausforderungen. Während früher hauptsächlich Fernsehen, Radio und Printmedien im Fokus standen, müssen wir heute Kinder und Jugendliche auf eine komplexe digitale Medienwelt vorbereiten.
             "url": "/detlef/medien/medienerziehung-digital",
-            "title": "Fake News erkennen und bewerten",
-            "excerpt": "Strategien und Methoden zur Identifikation von Falschinformationen in digitalen Medien.",
-            "content": """In der heutigen Informationsgesellschaft ist die Fähigkeit, Fake News zu erkennen, zu einer Schlüsselkompetenz geworden. Falschinformationen verbreiten sich in sozialen Medien oft schneller als seriöse Nachrichten.
+            "display_url": "/#/detlef/medien/medienerziehung-digital",
+            "images": [],
+            "author": "Detlef Zeiler",
+            "category": "medien",
+            "scraped_url": "https://www.zeiler.me/detlef/medien/medienerziehung-digital",
             "url": "/detlef/medien/fake-news-erkennen",
+            "display_url": "/#/detlef/medien/fake-news-erkennen",
+            "images": [],
+            "author": "Detlef Zeiler",
+            "category": "medien",
             "scraped_url": "https://www.zeiler.me/detlef/medien/fake-news-erkennen",
             "word_count": 201,
             "reading_time": 1
         },
         
+        # Detlef - Deutsch
+        {
+            "id": 6,
+            "title": "Goethe: Der Erlkönig - Interpretation",
             "excerpt": "Eine detaillierte Analyse von Goethes berühmter Ballade und ihrer literarischen Bedeutung.",
             "content": """Goethes 'Erlkönig' aus dem Jahr 1782 ist eine der bekanntesten deutschen Balladen und ein Meisterwerk der Romantik.
             "url": "/detlef/deutsch/goethe-erlkoenig",
@@ -97,11 +97,6 @@ def generate_test_articles():
             "word_count": 234,
             "reading_time": 1
         },
-        {
-            "id": 7,
-            "title": "Erörterung: Digitalisierung in der Schule",
-            "excerpt": "Pro und Contra der zunehmenden Digitalisierung im Bildungswesen.",
-            "content": """Die Digitalisierung der Schulen ist ein viel diskutiertes Thema, das sowohl Chancen als auch Risiken birgt.
             "url": "/detlef/deutsch/digitalisierung-schule",
             "display_url": "/#/detlef/deutsch/digitalisierung-schule",
             "images": [],
@@ -109,25 +104,30 @@ def generate_test_articles():
             "category": "deutsch",
             "scraped_url": "https://www.zeiler.me/detlef/deutsch/digitalisierung-schule",
             "word_count": 245,
-            "scraped_url": "https://www.zeiler.me/julian/techzap/react-hooks",
-            "word_count": 198,
             "reading_time": 1
-            "author": "Julian Zeiler",
+        },
+        
+        # Julian - TechZap
+        {
+            "id": 8,
+            "title": "React Hooks: Ein praktischer Leitfaden",
+            "excerpt": "Eine praktische Anleitung zu React Hooks und deren Verwendung in modernen React-Anwendungen.",
+            "content": """React Hooks haben die Art, wie wir React-Komponenten schreiben, revolutioniert. Sie ermöglichen es, State und andere React-Features in Funktionskomponenten zu verwenden.
             "content": """CSS Grid ist ein mächtiges Layout-System, das zweidimensionale Layouts ermöglicht und Flexbox perfekt ergänzt.
-            "url": "/julian/techzap/css-grid-layout",
-            "display_url": "/#/julian/techzap/css-grid-layout",
+            "url": "/julian/techzap/react-hooks",
+            "display_url": "/#/julian/techzap/react-hooks",
             "images": [],
             "author": "Julian Zeiler",
             "category": "techzap",
-            "scraped_url": "https://www.zeiler.me/julian/techzap/css-grid-layout",
-            "word_count": 223,
+            "scraped_url": "https://www.zeiler.me/julian/techzap/react-hooks",
+            "word_count": 198,
             "reading_time": 1
-        }
-    ]
-    
-    return test_articles
-
-def generate_articles_js():
+        },
+        {
+            "id": 9,
+            "title": "Linux Server Administration Grundlagen",
+            "excerpt": "Wichtige Befehle und Konzepte für die Verwaltung von Linux-Servern.",
+            "content": """Die Administration von Linux-Servern erfordert Kenntnisse verschiedener Befehle und Konzepte.
     """Generate the articles.js file with comprehensive test data"""
     
     # Generate test articles

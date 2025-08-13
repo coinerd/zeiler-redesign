@@ -1,13 +1,25 @@
 #!/usr/bin/env python3
 """
 Content Integration Script for Zeiler Redesign
-Processes scraped content and generates React-compatible data files with more test articles
+Processes scraped content and generates React-compatible data files
 """
 
 import json
 import os
 import re
 from datetime import datetime
+
+def load_scraped_data():
+    """Load scraped data from JSON file"""
+    try:
+        with open('scraped_data.json', 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print("⚠️  No scraped data found. Run 'python3 scrape_zeiler.py' first.")
+        return []
+    except Exception as e:
+        print(f"❌ Error loading scraped data: {e}")
+        return []
 
 def clean_title(title):
     """Clean and normalize article titles"""
@@ -26,8 +38,141 @@ def clean_title(title):
     
     return cleaned.strip() or 'Unbekannter Titel'
 
+def clean_content(content):
+    """Clean and normalize article content"""
+    if not content:
+        return ''
+    
+    # Remove Google Sites navigation and footer
+    unwanted_patterns = [
+        r'^Search this site.*?Skip to navigation\s*',
+        r'^Skip to main content.*?Skip to navigation\s*',
+        r'Startseite\s+Detlef Zeiler\s+Deutsch.*?Selfmade\s*',
+        r'Copyright © \d{4} - \d{4} Detlef und Julian Zeiler.*?$',
+        r'Google Sites\s+Report abuse.*?$',
+        r'Made with Google Sites\s*$'
+    ]
+
+    cleaned_content = content
+    for pattern in unwanted_patterns:
+        cleaned_content = re.sub(pattern, '', cleaned_content, flags=re.DOTALL | re.IGNORECASE)
+
+    # Clean whitespace but preserve paragraph structure
+    cleaned_content = re.sub(r'\n\s*\n\s*\n', '\n\n', cleaned_content)  # Multiple line breaks to double
+    cleaned_content = re.sub(r'^\s+|\s+$', '', cleaned_content, flags=re.MULTILINE)  # Whitespace at line start/end
+    cleaned_content = cleaned_content.strip()
+
+    return cleaned_content
+
+def generate_excerpt(content, max_length=200):
+    """Generate an excerpt from content"""
+    if not content:
+        return ''
+    
+    # Clean content first
+    clean_text = re.sub(r'[^\w\s\.\!\?]', ' ', content)
+    clean_text = re.sub(r'\s+', ' ', clean_text).strip()
+    
+    if len(clean_text) <= max_length:
+        return clean_text
+    
+    # Try to cut at sentence end
+    truncated = clean_text[:max_length]
+    last_sentence = max(
+        truncated.rfind('.'),
+        truncated.rfind('!'),
+        truncated.rfind('?')
+    )
+    
+    if last_sentence > max_length * 0.7:
+        return truncated[:last_sentence + 1]
+    
+    # Fallback: cut at word boundary
+    last_space = truncated.rfind(' ')
+    if last_space > 0:
+        return truncated[:last_space] + '...'
+    
+    return truncated + '...'
+
+def process_scraped_articles(scraped_data):
+    """Process scraped articles into the format needed for the React app"""
+    processed_articles = []
+    
+    for i, raw_article in enumerate(scraped_data):
+        try:
+            # Clean and process the article data
+            title = clean_title(raw_article.get('title', ''))
+            content = clean_content(raw_article.get('content', ''))
+            
+            # Skip articles with insufficient content
+            if len(content.strip()) < 100:
+                continue
+            
+            # Generate excerpt
+            excerpt = generate_excerpt(content)
+            
+            # Process images
+            images = []
+            for img in raw_article.get('images', []):
+                if isinstance(img, dict):
+                    images.append({
+                        'src': f"/src/assets/{img.get('src', '')}",
+                        'alt': img.get('alt', f"Bild zu {title}")
+                    })
+            
+            # Determine category from URL
+            url = raw_article.get('relative_url', raw_article.get('url', ''))
+            category = 'andere'  # default
+            
+            if '/detlef/' in url:
+                if '/geschichte/' in url:
+                    category = 'geschichte'
+                elif '/medien/' in url:
+                    category = 'medien'
+                elif '/deutsch/' in url:
+                    category = 'deutsch'
+                elif '/projekte/' in url:
+                    category = 'projekte'
+                else:
+                    category = 'detlef'
+            elif '/julian/' in url:
+                if '/techzap/' in url:
+                    category = 'techzap'
+                else:
+                    category = 'julian'
+            
+            # Create display URL for hash routing
+            display_url = f"/#/{url.strip('/')}" if url else f"/#/artikel-{i+1}"
+            
+            # Calculate reading time
+            word_count = len(content.split())
+            reading_time = max(1, round(word_count / 200))
+            
+            processed_article = {
+                'id': i + 1,
+                'title': title,
+                'excerpt': excerpt,
+                'content': content,
+                'url': url,
+                'display_url': display_url,
+                'images': images,
+                'author': raw_article.get('author', 'ZEILER.me'),
+                'category': category,
+                'scraped_url': raw_article.get('scraped_url', raw_article.get('url', '')),
+                'word_count': word_count,
+                'reading_time': reading_time
+            }
+            
+            processed_articles.append(processed_article)
+            
+        except Exception as e:
+            print(f"❌ Error processing article {i}: {e}")
+            continue
+    
+    return processed_articles
+
 def generate_test_articles():
-    """Generate comprehensive test articles for all categories"""
+    """Generate test articles as fallback when no scraped data is available"""
     
     test_articles = [
         # Detlef - Geschichte
@@ -329,10 +474,19 @@ Für moderne Webentwicklung ist CSS Grid unverzichtbar geworden. Es ergänzt Fle
     return test_articles
 
 if __name__ == '__main__':
-    print("🚀 Generating comprehensive test articles...")
+    print("🚀 Processing scraped content...")
     
-    # Generate test articles
-    processed_articles = generate_test_articles()
+    # Try to load scraped data first
+    scraped_data = load_scraped_data()
+    
+    if scraped_data:
+        print(f"📄 Found {len(scraped_data)} scraped articles")
+        processed_articles = process_scraped_articles(scraped_data)
+        print(f"✅ Processed {len(processed_articles)} articles from scraped data")
+    else:
+        print("📝 No scraped data found, using test articles...")
+        processed_articles = generate_test_articles()
+        print(f"✅ Generated {len(processed_articles)} test articles")
 
     # Convert articles to JavaScript format with proper escaping
     articles_js = "[\n"
@@ -430,9 +584,15 @@ export const articleStats = {{
     try:
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(js_content)
-        print(f"✅ Generated {output_file} successfully!")
-        print("✅ Comprehensive test articles generated successfully!")
+        print(f"✅ Generated {output_file} with {len(processed_articles)} articles!")
+        
+        if scraped_data:
+            print("✅ Real scraped content integrated successfully!")
+        else:
+            print("✅ Test articles generated successfully!")
+            print("💡 To use real content, run: python3 scrape_zeiler.py")
+            
     except Exception as e:
         print(f"❌ Error writing {output_file}: {e}")
-        print("❌ Failed to generate test articles!")
+        print("❌ Failed to generate articles!")
         exit(1)

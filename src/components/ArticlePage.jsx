@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import Header from './Header.jsx'
 import Footer from './Footer.jsx'
 import Breadcrumbs from './Breadcrumbs.jsx'
-import { getArticleByUrl } from '../data/articles.js'
+import { getArticleByUrl } from '../data/articles_comprehensive.js'
 import { Calendar, User, ArrowLeft, Clock, Tag } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 

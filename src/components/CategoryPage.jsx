@@ -4,7 +4,7 @@ import Header from './Header.jsx'
 import Footer from './Footer.jsx'
 import Breadcrumbs from './Breadcrumbs.jsx'
 import ArticleCard from './ArticleCard.jsx'
-import { articles } from '../data/articles.js'
+import { articles } from '../data/articles_comprehensive.js'
 import { ArrowLeft, User, Code, History, BookOpen, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 

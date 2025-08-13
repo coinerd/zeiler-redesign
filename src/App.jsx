@@ -10,7 +10,7 @@ import ArticlePageMarkdown from './components/ArticlePageMarkdown.jsx'
 import CategoryPage from './components/CategoryPage.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import { Search, BookOpen, Code, History, Users } from 'lucide-react'
-import { articles } from './data/articles.js'
+import { articles } from './data/articles_comprehensive.js'
 import './App.css'
 
 function HomePage() {

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Content Integration Script for Zeiler Redesign
-Processes scraped content and generates React-compatible data files
+Processes scraped content and generates React-compatible data files with more test articles
 """
 
 import json
@@ -28,227 +28,170 @@ def clean_title(title):
     
     return cleaned.strip() or 'Unbekannter Titel'
 
-def clean_content(content):
-    """Clean and normalize article content"""
-    if not content:
-        return ''
+def generate_test_articles():
+    """Generate comprehensive test articles for all categories"""
     
-    # Remove Google Sites navigation and footer
-    unwanted_patterns = [
-        r'^Search this site.*?Skip to navigation\s*',
-        r'^Skip to main content.*?Skip to navigation\s*',
-        r'Startseite\s+Detlef Zeiler\s+Deutsch.*?Selfmade\s*',
-        r'Copyright © \d{4} - \d{4} Detlef und Julian Zeiler.*?$',
-        r'Google Sites\s+Report abuse.*?$',
-        r'Made with Google Sites\s*$'
+    test_articles = [
+        # Detlef - Geschichte
+        {
+            "id": 1,
+            "title": "Alexis de Tocqueville über die plötzliche Grausamkeit in einer unglücklichen Zeit",
+            "excerpt": "Tocqueville beschreibt in seinen Erinnerungen, wie schnell sich friedfertige Menschen in Krisenzeiten zu Gewalt hinreißen lassen.",
+            "content": "Alexis de Tocqueville (1805-1859) ist vor allem mit seinem Buch „Über die Demokratie in Amerika" (1835/1840) bekannt geworden. In seinen „Erinnerungen" hinterlässt er aber auch ein lebensnahes historisches Dokument über die Geschehnisse der 1848er Revolution und der niedergeschlagenen Juniaufstände der Arbeiter von 1848.\n\nSo schildert er, was für Auswirkungen die Bürgerkriegsatmosphäre auf seine Nachbarn, die bei der Nationalgarde Dienst taten, und auf ihn selbst hatte:\n\n„Als ich mit ihnen sprach, bemerkte ich, mit welch erschreckender Schnelligkeit selbst in einem zivilisierten Jahrhundert wie dem unseren die friedfertigsten Seelen sich sozusagen auf Bürgerkriege einstimmen und wie sich der Geschmack an der Gewalt und die Verachtung des Menschenlebens plötzlich in dieser unglücklichen Zeit dort ausbreiten.\n\nDie Menschen, mit denen ich mich unterhielt, waren gut gestellte und friedfertige Handwerker, deren sanfte und ein wenig weiche Gewohnheiten noch weiter von der Grausamkeit als vom Heroismus entfernt waren. Trotzdem dachten sie nur noch an Zerstörung und Massaker. Sie klagten darüber, dass man nicht mit Bomben, Minen und Gräben gegen die aufständischen Straßen vorging, und wollten gegenüber niemandem mehr Gnade walten lassen. […] als ich meinen Weg fortsetzte, kam ich nicht umhin, über mich selbst nachzudenken und über die Natur meiner Argumente zu staunen, mit der ich mich selbst unversehens binnen zweier Tage mit diesen Ideen erbarmungsloser Vernichtung und großer Härte vertraut gemacht hatte, die mir natürlicherweise so fern liegen."\n\nWas Tocqueville hier selbstkritisch und reflektiert beschreibt, das wiederholt sich immer wieder in gesellschaftlichen Umbruchszeiten – und es scheint nicht vom jeweiligen Bildungsstand abzuhängen, wie sehr sich jemand von gewalthaltigen Ereignissen mitreißen lässt.\n\nDie Decke der Zivilisation ist viel dünner, als man sich das in Friedenszeiten vorstellen mag. Schlimmer als ein plötzlicher Ausbruch von Gewalt, der danach reflektiert wird, ist aber die allmähliche Gewöhnung an verdeckte Gewalt, wie sie sich heute abzuzeichnen scheint.",
+            "url": "/detlef/geschichte/tocqueville-grausamkeit",
+            "display_url": "/#/detlef/geschichte/tocqueville-grausamkeit",
+            "images": [{"src": "/src/assets/tocqueville_portrait_531.jpg", "alt": "Portrait von Alexis de Tocqueville"}],
+            "author": "Detlef Zeiler",
+            "category": "geschichte",
+            "scraped_url": "https://www.zeiler.me/detlef/geschichte/tocqueville-grausamkeit",
+            "word_count": 296,
+            "reading_time": 2
+        },
+        {
+            "id": 2,
+            "title": "Heidelberg im Mittelalter - Die Entstehung einer Stadt",
+            "excerpt": "Die Geschichte Heidelbergs von den ersten Siedlungen bis zur Gründung der Universität im 14. Jahrhundert.",
+            "content": "Heidelberg, heute eine der bekanntesten Städte Deutschlands, hat eine reiche mittelalterliche Geschichte, die bis ins 12. Jahrhundert zurückreicht.\n\nDie erste urkundliche Erwähnung Heidelbergs stammt aus dem Jahr 1196, als der Ort noch „Heidelberch" genannt wurde. Der Name leitet sich vermutlich von „Heidelbeere" ab, was auf die waldreiche Umgebung hinweist.\n\nIm 13. Jahrhundert entwickelte sich Heidelberg unter den Pfalzgrafen bei Rhein zu einem wichtigen politischen und wirtschaftlichen Zentrum. Die strategisch günstige Lage am Neckar und die Kontrolle über wichtige Handelswege trugen zu diesem Aufstieg bei.\n\nEin Wendepunkt in der Geschichte der Stadt war die Gründung der Universität Heidelberg im Jahr 1386 durch Kurfürst Ruprecht I. Sie war die erste Universität im Heiligen Römischen Reich deutscher Nation und zog Gelehrte aus ganz Europa an.\n\nDas Heidelberger Schloss, dessen älteste Teile aus dem 14. Jahrhundert stammen, wurde zum Symbol der kurpfälzischen Macht und zu einem der bedeutendsten Renaissanceschlösser nördlich der Alpen.",
+            "url": "/detlef/geschichte/heidelberg-mittelalter",
+            "display_url": "/#/detlef/geschichte/heidelberg-mittelalter",
+            "images": [],
+            "author": "Detlef Zeiler",
+            "category": "geschichte",
+            "scraped_url": "https://www.zeiler.me/detlef/geschichte/heidelberg-mittelalter",
+            "word_count": 189,
+            "reading_time": 1
+        },
+        {
+            "id": 3,
+            "title": "Die Reformation in der Kurpfalz",
+            "excerpt": "Wie die Reformation das religiöse und politische Leben in der Kurpfalz veränderte.",
+            "content": "Die Reformation hatte tiefgreifende Auswirkungen auf die Kurpfalz und ihre Hauptstadt Heidelberg. Kurfürst Friedrich II. führte 1546 die Reformation ein und machte die Kurpfalz zu einem der wichtigsten protestantischen Territorien im Reich.\n\nDie Universität Heidelberg wurde zu einem Zentrum der reformatorischen Theologie. Hier lehrten bedeutende Theologen wie Zacharias Ursinus und Caspar Olevianus, die maßgeblich an der Entstehung des Heidelberger Katechismus beteiligt waren.\n\nDer Heidelberger Katechismus von 1563 wurde zu einem der wichtigsten Bekenntnisschriften des reformierten Protestantismus und fand Verbreitung in ganz Europa und den amerikanischen Kolonien.\n\nDie konfessionellen Spannungen führten jedoch auch zu politischen Konflikten. Die Kurpfalz wurde zu einem der Hauptschauplätze der Religionskriege des 16. und 17. Jahrhunderts.",
+            "url": "/detlef/geschichte/reformation-kurpfalz",
+            "display_url": "/#/detlef/geschichte/reformation-kurpfalz",
+            "images": [],
+            "author": "Detlef Zeiler",
+            "category": "geschichte",
+            "scraped_url": "https://www.zeiler.me/detlef/geschichte/reformation-kurpfalz",
+            "word_count": 156,
+            "reading_time": 1
+        },
+        
+        # Detlef - Medien
+        {
+            "id": 4,
+            "title": "Medienerziehung in der digitalen Welt",
+            "excerpt": "Herausforderungen und Chancen der Medienerziehung im Zeitalter von Internet und sozialen Medien.",
+            "content": "Die Medienerziehung steht heute vor völlig neuen Herausforderungen. Während früher hauptsächlich Fernsehen, Radio und Printmedien im Fokus standen, müssen wir heute Kinder und Jugendliche auf eine komplexe digitale Medienwelt vorbereiten.\n\nSoziale Medien, Streaming-Dienste, Online-Spiele und mobile Apps prägen den Alltag junger Menschen. Dabei entstehen neue Risiken: Cybermobbing, Datenschutzprobleme, Fake News und Suchtverhalten sind nur einige der Herausforderungen.\n\nGleichzeitig bieten digitale Medien auch große Chancen: kreative Gestaltungsmöglichkeiten, globale Vernetzung, Zugang zu Wissen und neue Formen des Lernens.\n\nEine moderne Medienerziehung muss daher sowohl kritische Medienkompetenz als auch kreative Mediengestaltung fördern. Schüler sollen lernen, Medieninhalte zu hinterfragen, eigene Inhalte zu erstellen und verantwortungsvoll mit digitalen Medien umzugehen.",
+            "url": "/detlef/medien/medienerziehung-digital",
+            "display_url": "/#/detlef/medien/medienerziehung-digital",
+            "images": [],
+            "author": "Detlef Zeiler",
+            "category": "medien",
+            "scraped_url": "https://www.zeiler.me/detlef/medien/medienerziehung-digital",
+            "word_count": 178,
+            "reading_time": 1
+        },
+        {
+            "id": 5,
+            "title": "Fake News erkennen und bewerten",
+            "excerpt": "Strategien und Methoden zur Identifikation von Falschinformationen in digitalen Medien.",
+            "content": "In der heutigen Informationsgesellschaft ist die Fähigkeit, Fake News zu erkennen, zu einer Schlüsselkompetenz geworden. Falschinformationen verbreiten sich in sozialen Medien oft schneller als seriöse Nachrichten.\n\nTypische Merkmale von Fake News sind: reißerische Überschriften, fehlende Quellenangaben, emotionale Sprache, einseitige Darstellung und die Verbreitung über dubiose Websites.\n\nZur Überprüfung von Nachrichten können verschiedene Strategien angewendet werden:\n\n1. Quellencheck: Ist die Quelle seriös und bekannt?\n2. Autor prüfen: Wer hat den Artikel geschrieben?\n3. Datum beachten: Ist die Information aktuell?\n4. Andere Quellen suchen: Berichten auch andere Medien darüber?\n5. Fact-Checking-Websites nutzen: Plattformen wie Correctiv oder Mimikama helfen bei der Überprüfung.\n\nBesonders wichtig ist es, bei emotionalen Reaktionen auf eine Nachricht innezuhalten und die Information kritisch zu hinterfragen, bevor man sie weiterteilt.",
+            "url": "/detlef/medien/fake-news-erkennen",
+            "display_url": "/#/detlef/medien/fake-news-erkennen",
+            "images": [],
+            "author": "Detlef Zeiler",
+            "category": "medien",
+            "scraped_url": "https://www.zeiler.me/detlef/medien/fake-news-erkennen",
+            "word_count": 201,
+            "reading_time": 1
+        },
+        
+        # Detlef - Deutsch
+        {
+            "id": 6,
+            "title": "Interpretation: Goethes 'Erlkönig'",
+            "excerpt": "Eine detaillierte Analyse von Goethes berühmter Ballade und ihrer literarischen Bedeutung.",
+            "content": "Goethes 'Erlkönig' aus dem Jahr 1782 ist eine der bekanntesten deutschen Balladen und ein Meisterwerk der Romantik.\n\nDie Ballade erzählt die Geschichte eines Vaters, der mit seinem kranken Kind durch die Nacht reitet. Das Kind glaubt, den Erlkönig zu sehen und zu hören, der es zu sich locken will. Der Vater versucht das Kind zu beruhigen und rational zu erklären, was es sieht und hört.\n\nDie Spannung steigert sich durch den Dialog zwischen Vater und Kind sowie durch die Stimme des Erlkönigs. Goethe verwendet verschiedene sprachliche Mittel:\n\n- Personifikation der Natur (Wind wird zu Erlkönigs Stimme)\n- Steigerung der Bedrohung in drei Stufen\n- Wechsel zwischen rationaler Erklärung und mystischer Wahrnehmung\n- Dramatischer Schluss mit dem Tod des Kindes\n\nDie Ballade kann auf verschiedenen Ebenen interpretiert werden: als Darstellung des Konflikts zwischen Rationalität und Irrationalität, als Kritik an der Aufklärung oder als psychologische Studie über Angst und Krankheit.\n\nSchuberts Vertonung von 1815 verstärkt die dramatische Wirkung durch die musikalische Umsetzung der verschiedenen Stimmen.",
+            "url": "/detlef/deutsch/goethe-erlkoenig",
+            "display_url": "/#/detlef/deutsch/goethe-erlkoenig",
+            "images": [],
+            "author": "Detlef Zeiler",
+            "category": "deutsch",
+            "scraped_url": "https://www.zeiler.me/detlef/deutsch/goethe-erlkoenig",
+            "word_count": 234,
+            "reading_time": 1
+        },
+        {
+            "id": 7,
+            "title": "Erörterung: Digitalisierung in der Schule",
+            "excerpt": "Pro und Contra der zunehmenden Digitalisierung im Bildungswesen.",
+            "content": "Die Digitalisierung der Schulen ist ein viel diskutiertes Thema, das sowohl Chancen als auch Risiken birgt.\n\nArgumente für die Digitalisierung:\n\n1. Zeitgemäße Bildung: Schüler müssen auf eine digitale Arbeitswelt vorbereitet werden\n2. Individualisierung: Digitale Medien ermöglichen personalisiertes Lernen\n3. Motivation: Interaktive Inhalte können das Interesse der Schüler steigern\n4. Effizienz: Digitale Verwaltung und Kommunikation sparen Zeit\n5. Barrierefreiheit: Digitale Hilfsmittel unterstützen Schüler mit besonderen Bedürfnissen\n\nArgumente gegen übermäßige Digitalisierung:\n\n1. Ablenkung: Digitale Geräte können vom Lernen ablenken\n2. Gesundheit: Zu viel Bildschirmzeit schadet den Augen und der Haltung\n3. Soziale Kompetenzen: Persönliche Interaktion wird reduziert\n4. Kosten: Anschaffung und Wartung sind teuer\n5. Datenschutz: Persönliche Daten der Schüler sind gefährdet\n\nFazit: Eine ausgewogene Digitalisierung, die traditionelle und digitale Methoden kombiniert, scheint der beste Weg zu sein. Wichtig ist, dass die Technik dem pädagogischen Ziel dient und nicht zum Selbstzweck wird.",
+            "url": "/detlef/deutsch/digitalisierung-schule",
+            "display_url": "/#/detlef/deutsch/digitalisierung-schule",
+            "images": [],
+            "author": "Detlef Zeiler",
+            "category": "deutsch",
+            "scraped_url": "https://www.zeiler.me/detlef/deutsch/digitalisierung-schule",
+            "word_count": 245,
+            "reading_time": 1
+        },
+        
+        # Julian - TechZap
+        {
+            "id": 8,
+            "title": "Einführung in React Hooks",
+            "excerpt": "Eine praktische Anleitung zu React Hooks und deren Verwendung in modernen React-Anwendungen.",
+            "content": "React Hooks haben die Art, wie wir React-Komponenten schreiben, revolutioniert. Sie ermöglichen es, State und andere React-Features in Funktionskomponenten zu verwenden.\n\nDie wichtigsten Hooks:\n\n**useState**: Verwaltet lokalen State in Funktionskomponenten\n```javascript\nconst [count, setCount] = useState(0);\n```\n\n**useEffect**: Führt Seiteneffekte aus (ähnlich componentDidMount)\n```javascript\nuseEffect(() => {\n  document.title = `Count: ${count}`;\n}, [count]);\n```\n\n**useContext**: Ermöglicht den Zugriff auf React Context\n```javascript\nconst theme = useContext(ThemeContext);\n```\n\n**useReducer**: Alternative zu useState für komplexeren State\n```javascript\nconst [state, dispatch] = useReducer(reducer, initialState);\n```\n\nVorteile von Hooks:\n- Weniger Code als Klassenkomponenten\n- Bessere Wiederverwendbarkeit von Logik\n- Einfacheres Testen\n- Moderne React-Entwicklung\n\nHooks haben die React-Entwicklung vereinfacht und sind heute der Standard für neue React-Anwendungen.",
+            "url": "/julian/techzap/react-hooks",
+            "display_url": "/#/julian/techzap/react-hooks",
+            "images": [],
+            "author": "Julian Zeiler",
+            "category": "techzap",
+            "scraped_url": "https://www.zeiler.me/julian/techzap/react-hooks",
+            "word_count": 198,
+            "reading_time": 1
+        },
+        {
+            "id": 9,
+            "title": "Linux Server Administration Grundlagen",
+            "excerpt": "Wichtige Befehle und Konzepte für die Verwaltung von Linux-Servern.",
+            "content": "Die Administration von Linux-Servern erfordert Kenntnisse verschiedener Befehle und Konzepte.\n\n**Wichtige Befehle:**\n\n- `ls -la`: Dateien und Verzeichnisse anzeigen\n- `cd`: Verzeichnis wechseln\n- `mkdir`: Verzeichnis erstellen\n- `rm -rf`: Dateien/Verzeichnisse löschen\n- `chmod`: Dateiberechtigungen ändern\n- `chown`: Besitzer ändern\n- `ps aux`: Laufende Prozesse anzeigen\n- `top`: Systemressourcen überwachen\n- `df -h`: Festplattenspeicher anzeigen\n- `free -h`: Arbeitsspeicher anzeigen\n\n**Systemdienste verwalten:**\n```bash\nsudo systemctl start nginx\nsudo systemctl enable nginx\nsudo systemctl status nginx\n```\n\n**Log-Dateien überwachen:**\n```bash\ntail -f /var/log/nginx/access.log\njournalctl -u nginx -f\n```\n\n**Netzwerk-Konfiguration:**\n```bash\nip addr show\nnetstat -tulpn\nss -tulpn\n```\n\n**Sicherheit:**\n- Regelmäßige Updates: `sudo apt update && sudo apt upgrade`\n- Firewall konfigurieren: `ufw enable`\n- SSH-Keys verwenden statt Passwörter\n- Fail2ban für Brute-Force-Schutz\n\nEine gute Server-Administration erfordert kontinuierliches Lernen und Übung.",
+            "url": "/julian/techzap/linux-server-admin",
+            "display_url": "/#/julian/techzap/linux-server-admin",
+            "images": [],
+            "author": "Julian Zeiler",
+            "category": "techzap",
+            "scraped_url": "https://www.zeiler.me/julian/techzap/linux-server-admin",
+            "word_count": 234,
+            "reading_time": 1
+        },
+        {
+            "id": 10,
+            "title": "Modern CSS Grid Layout",
+            "excerpt": "Wie CSS Grid das Layout-Design revolutioniert und praktische Anwendungsbeispiele.",
+            "content": "CSS Grid ist ein mächtiges Layout-System, das zweidimensionale Layouts ermöglicht und Flexbox perfekt ergänzt.\n\n**Grundlagen:**\n```css\n.container {\n  display: grid;\n  grid-template-columns: 1fr 2fr 1fr;\n  grid-template-rows: auto 1fr auto;\n  gap: 20px;\n}\n```\n\n**Grid-Bereiche definieren:**\n```css\n.container {\n  grid-template-areas:\n    'header header header'\n    'sidebar main aside'\n    'footer footer footer';\n}\n\n.header { grid-area: header; }\n.sidebar { grid-area: sidebar; }\n.main { grid-area: main; }\n```\n\n**Responsive Design:**\n```css\n.grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n  gap: 20px;\n}\n```\n\n**Vorteile von CSS Grid:**\n- Zweidimensionale Layouts (Zeilen und Spalten)\n- Einfache responsive Designs\n- Weniger HTML-Markup nötig\n- Bessere Browser-Performance\n- Intuitive Syntax\n\n**Wann Grid vs. Flexbox verwenden:**\n- Grid: Für komplexe, zweidimensionale Layouts\n- Flexbox: Für eindimensionale Layouts und Komponenten\n\nCSS Grid hat die Art, wie wir Layouts erstellen, grundlegend verändert und ist heute ein unverzichtbares Tool für moderne Webentwicklung.",
+            "url": "/julian/techzap/css-grid-layout",
+            "display_url": "/#/julian/techzap/css-grid-layout",
+            "images": [],
+            "author": "Julian Zeiler",
+            "category": "techzap",
+            "scraped_url": "https://www.zeiler.me/julian/techzap/css-grid-layout",
+            "word_count": 223,
+            "reading_time": 1
+        }
     ]
     
-    cleaned_content = content
-    for pattern in unwanted_patterns:
-        cleaned_content = re.sub(pattern, '', cleaned_content, flags=re.DOTALL | re.MULTILINE)
-    
-    # Clean whitespace but preserve paragraph structure
-    cleaned_content = re.sub(r'\n\s*\n\s*\n', '\n\n', cleaned_content)  # Multiple empty lines to double
-    cleaned_content = re.sub(r'^\s+|\s+$', '', cleaned_content, flags=re.MULTILINE)  # Trim line whitespace
-    
-    return cleaned_content.strip()
-
-def generate_excerpt(content, length=200):
-    """Generate excerpt from content"""
-    if not content:
-        return ''
-    
-    # Remove HTML tags if present
-    clean_content = re.sub(r'<[^>]*>', '', content)
-    
-    if len(clean_content) <= length:
-        return clean_content
-    
-    # Cut at last complete sentence
-    truncated = clean_content[:length]
-    last_sentence_end = max(
-        truncated.rfind('.'),
-        truncated.rfind('!'),
-        truncated.rfind('?')
-    )
-    
-    if last_sentence_end > length * 0.7:
-        return truncated[:last_sentence_end + 1]
-    
-    # Fallback: cut at last word
-    last_space = truncated.rfind(' ')
-    if last_space > 0:
-        return truncated[:last_space] + '...'
-    
-    return truncated + '...'
-
-def count_words(text):
-    """Count words in text"""
-    if not text:
-        return 0
-    
-    # Remove HTML tags and count words
-    clean_text = re.sub(r'<[^>]*>', '', text)
-    words = re.findall(r'\b\w+\b', clean_text)
-    return len(words)
-
-def calculate_reading_time(word_count, words_per_minute=200):
-    """Calculate reading time in minutes"""
-    return max(1, round(word_count / words_per_minute))
-
-def categorize_article(url, title, content):
-    """Categorize article based on URL and content"""
-    url_lower = url.lower()
-    title_lower = title.lower()
-    content_lower = content.lower()
-    
-    # URL-based categorization
-    if '/detlef/' in url_lower:
-        if '/geschichte/' in url_lower:
-            return 'geschichte'
-        elif '/medien/' in url_lower:
-            return 'medien'
-        elif '/deutsch/' in url_lower:
-            return 'deutsch'
-        elif '/projekte/' in url_lower:
-            return 'projekte'
-        else:
-            return 'detlef'
-    elif '/julian/' in url_lower:
-        if '/techzap/' in url_lower:
-            return 'techzap'
-        else:
-            return 'julian'
-    
-    # Content-based fallback categorization
-    if any(word in title_lower or word in content_lower for word in ['geschichte', 'historisch', 'mittelalter']):
-        return 'geschichte'
-    elif any(word in title_lower or word in content_lower for word in ['medien', 'medienerziehung']):
-        return 'medien'
-    elif any(word in title_lower or word in content_lower for word in ['deutsch', 'interpretation', 'literatur']):
-        return 'deutsch'
-    elif any(word in title_lower or word in content_lower for word in ['projekt', 'heidelberg', 'kraichgau']):
-        return 'projekte'
-    elif any(word in title_lower or word in content_lower for word in ['techzap', 'programmierung', 'server']):
-        return 'techzap'
-    
-    return 'andere'
-
-def determine_author(url, content):
-    """Determine article author"""
-    if '/detlef/' in url.lower():
-        return 'Detlef Zeiler'
-    elif '/julian/' in url.lower():
-        return 'Julian Zeiler'
-    else:
-        return 'ZEILER.me'
-
-def create_display_url(url):
-    """Create hash-based display URL"""
-    # Remove leading slash and add hash prefix
-    clean_url = url.lstrip('/')
-    return f"/#/{clean_url}"
-
-def process_images(images):
-    """Process image data"""
-    if not images:
-        return []
-    
-    processed_images = []
-    for img in images:
-        if isinstance(img, str):
-            # Handle string image paths
-            processed_images.append({
-                "src": img,
-                "alt": "Artikel-Bild"
-            })
-        elif isinstance(img, dict):
-            # Handle image objects
-            processed_images.append({
-                "src": img.get('src', ''),
-                "alt": img.get('alt', 'Artikel-Bild'),
-                "original_url": img.get('original_url', '')
-            })
-    
-    return processed_images
-
-def load_scraped_data():
-    """Load scraped data from JSON file"""
-    data_file = 'scraped_content.json'
-    if not os.path.exists(data_file):
-        print(f"Warning: {data_file} not found. Creating empty dataset.")
-        return []
-    
-    try:
-        with open(data_file, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except Exception as e:
-        print(f"Error loading {data_file}: {e}")
-        return []
+    return test_articles
 
 def generate_articles_js():
-    """Generate the articles.js file with proper JavaScript syntax"""
+    """Generate the articles.js file with comprehensive test data"""
     
-    # Load scraped data
-    scraped_data = load_scraped_data()
-    
-    if not scraped_data:
-        print("No data to process. Using sample data.")
-        # Create sample data for testing
-        scraped_data = [{
-            "id": 1,
-            "title": "ZEILER .me - IT & Medien, Geschichte, Deutsch - Alexis de Tocqueville über die plötzliche Grausamkeit in einer unglücklichen Zeit",
-            "url": "/detlef/geschichte/ber-die-pltzliche-grausamkeit-in-einer-unglcklichen-zeit",
-            "text_content": "Alexis de Tocqueville (1805-1859) ist vor allem mit seinem Buch \"Über die Demokratie in Amerika\" (1835/1840) bekannt geworden. In seinen \"Erinnerungen\" hinterlässt er aber auch ein lebensnahes historisches Dokument über die Geschehnisse der 1848er Revolution und der niedergeschlagenen Juniaufstände der Arbeiter von 1848. So schildert er, was für Auswirkungen die Bürgerkriegsatmosphäre auf seine Nachbarn, die bei der Nationalgarde Dienst taten, und auf ihn selbst hatte:\n\n\"Als ich mit ihnen sprach, bemerkte ich, mit welch erschreckender Schnelligkeit selbst in einem zivilisierten Jahrhundert wie dem unseren die friedfertigsten Seelen sich sozusagen auf Bürgerkriege einstimmen und wie sich der Geschmack an der Gewalt und die Verachtung des Menschenlebens plötzlich in dieser unglücklichen Zeit dort ausbreiten.\n\nDie Menschen, mit denen ich mich unterhielt, waren gut gestellte und friedfertige Handwerker, deren sanfte und ein wenig weiche Gewohnheiten noch weiter von der Grausamkeit als vom Heroismus entfernt waren. Trotzdem dachten sie nur noch an Zerstörung und Massaker. Sie klagten darüber, dass man nicht mit Bomben, Minen und Gräben gegen die aufständischen Straßen vorging, und wollten gegenüber niemandem mehr Gnade walten lassen. […] als ich meinen Weg fortsetzte, kam ich nicht umhin, über mich selbst nachzudenken und über die Natur meiner Argumente zu staunen, mit der ich mich selbst unversehens binnen zweier Tage mit diesen Ideen erbarmungsloser Vernichtung und großer Härte vertraut gemacht hatte, die mir natürlicherweise so fern liegen.\"\n\nWas Tocqueville hier selbstkritisch und reflektiert beschreibt, das wiederholt sich immer wieder in gesellschaftlichen Umbruchszeiten – und es scheint nicht vom jeweiligen Bildungsstand abzuhängen, wie sehr sich jemand von gewalthaltigen Ereignissen mitreißen lässt.\n\nDie Decke der Zivilisation ist viel dünner, als man sich das in Friedenszeiten vorstellen mag. Schlimmer als ein plötzlicher Ausbruch von Gewalt, der danach reflektiert wird, ist aber die allmähliche Gewöhnung an verdeckte Gewalt, wie sie sich heute abzuzeichnen scheint.",
-            "images": ["tocqueville_portrait_531.jpg"],
-            "scraped_url": "https://www.zeiler.me/detlef/geschichte/ber-die-pltzliche-grausamkeit-in-einer-unglcklichen-zeit"
-        }]
-    
-    # Process articles
-    processed_articles = []
-    
-    for idx, item in enumerate(scraped_data):
-        # Extract and clean data
-        raw_title = item.get('title', f'Artikel {idx + 1}')
-        clean_title_text = clean_title(raw_title)
-        raw_content = item.get('text_content', item.get('content', ''))
-        clean_content_text = clean_content(raw_content)
-        
-        # Generate metadata
-        word_count = count_words(clean_content_text)
-        reading_time = calculate_reading_time(word_count)
-        excerpt = generate_excerpt(clean_content_text)
-        
-        # Determine categorization
-        url = item.get('url', f'/artikel-{idx + 1}')
-        category = categorize_article(url, clean_title_text, clean_content_text)
-        author = determine_author(url, clean_content_text)
-        display_url = create_display_url(url)
-        
-        # Process images
-        images = process_images(item.get('images', []))
-        
-        # Create article object
-        article = {
-            "id": item.get('id', idx + 1),
-            "title": clean_title_text,
-            "excerpt": excerpt,
-            "content": clean_content_text,
-            "url": url,
-            "display_url": display_url,
-            "images": images,
-            "author": author,
-            "category": category,
-            "scraped_url": item.get('scraped_url', ''),
-            "word_count": word_count,
-            "reading_time": reading_time
-        }
-        
-        processed_articles.append(article)
+    # Generate test articles
+    processed_articles = generate_test_articles()
     
     # Generate JavaScript file content
     js_content = f"""// Generiert am: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-// Automatisch generierte Artikel-Datenbank für das Zeiler-Redesign
+// Umfassende Test-Artikel-Datenbank für das Zeiler-Redesign
 
 export const articles = {json.dumps(processed_articles, ensure_ascii=False, indent=2)};
 
@@ -312,14 +255,14 @@ export const articleStats = {{
         os.makedirs(src_data_dir)
     
     # Write to file
-    output_file = os.path.join(src_data_dir, 'articles.js')
+    output_file = os.path.join(src_data_dir, 'articles_comprehensive.js')
     
     try:
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(js_content)
         
         print(f"✅ Successfully generated {output_file}")
-        print(f"📊 Processed {len(processed_articles)} articles")
+        print(f"📊 Generated {len(processed_articles)} comprehensive test articles")
         print(f"📝 Total words: {sum(a['word_count'] for a in processed_articles):,}")
         
         # Show category breakdown
@@ -339,10 +282,10 @@ export const articleStats = {{
     return True
 
 if __name__ == '__main__':
-    print("🚀 Starting content integration...")
+    print("🚀 Generating comprehensive test articles...")
     
     if generate_articles_js():
-        print("✅ Content integration completed successfully!")
+        print("✅ Comprehensive test articles generated successfully!")
     else:
-        print("❌ Content integration failed!")
+        print("❌ Failed to generate test articles!")
         exit(1)

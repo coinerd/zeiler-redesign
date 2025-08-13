@@ -172,18 +172,30 @@ const ArticlePage = () => {
 
   // Generiere Breadcrumbs basierend auf der URL
   const generateBreadcrumbs = (url) => {
-    const parts = url.split('/').filter(part => part)
-    const breadcrumbs = []
+    const parts = url.split('/').filter(part => part);
+    const breadcrumbs = [
+      { name: 'Startseite', href: '/#/' }
+    ];
     
+    // Mapping für bessere Kategorie-Namen
+    const categoryNames = {
+      'detlef': 'Detlef',
+      'julian': 'Julian', 
+      'geschichte': 'Geschichte',
+      'medien': 'Medien',
+      'deutsch': 'Deutsch',
+      'projekte': 'Projekte',
+      'techzap': 'TechZap'
+    };
+    
+    // Füge Kategorie-Breadcrumbs hinzu (ohne den letzten Teil, der der Artikel-Slug ist)
     for (let i = 0; i < parts.length - 1; i++) {
-      const href = `/#/${parts.slice(0, i + 1).join('/')}`
-      const name = parts[i].charAt(0).toUpperCase() + parts[i].slice(1)
-      breadcrumbs.push({ name, href })
+      const href = `/#/${parts.slice(0, i + 1).join('/')}`;
+      const categoryKey = parts[i].toLowerCase();
+      const name = categoryNames[categoryKey] || parts[i].charAt(0).toUpperCase() + parts[i].slice(1);
+      breadcrumbs.push({ name, href });
     }
     
-    breadcrumbs.push({ name: article.title })
-    return breadcrumbs
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">

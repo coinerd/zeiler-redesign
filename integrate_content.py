@@ -14,10 +14,12 @@ def clean_title(title):
     if not title:
         return 'Unbekannter Titel'
     
+    prefixes_to_remove = [
         'ZEILER.me - ',
         'IT & Medien, Geschichte, Deutsch - '
     ]
     
+    cleaned = title
     for prefix in prefixes_to_remove:
         if cleaned.startswith(prefix):
             cleaned = cleaned[len(prefix):]

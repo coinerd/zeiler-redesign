@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { HashRouter as Router, Routes, Route } from 'react-router-dom'
+import React from 'react'
+import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
 import Breadcrumbs from './components/Breadcrumbs.jsx'
@@ -15,6 +16,12 @@ import './App.css'
 function HomePage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState([])
+
+  // Reset search when component mounts (when navigating back to homepage)
+  React.useEffect(() => {
+    setSearchTerm('')
+    setSearchResults([])
+  }, [])
 
   const handleSearch = (term) => {
     setSearchTerm(term)

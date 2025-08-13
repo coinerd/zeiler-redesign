@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, Search, Home, User, BookOpen, Code, History } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const location = useLocation()
 
   const navigationItems = [
     { name: 'Startseite', to: '/', icon: Home },
@@ -33,7 +34,11 @@ const Header = () => {
                 <Link
                   key={item.name}
                   to={item.to}
-                  className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    location.pathname === item.to || location.hash === item.to
+                      ? 'text-blue-600 bg-blue-50'
+                      : 'text-gray-700 hover:text-blue-600'
+                  }`}
                 >
                   <IconComponent size={16} />
                   <span>{item.name}</span>
@@ -70,7 +75,11 @@ const Header = () => {
                   <Link
                     key={item.name}
                     to={item.to}
-                    className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium transition-colors"
+                    className={`flex items-center space-x-2 block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                      location.pathname === item.to || location.hash === item.to
+                        ? 'text-blue-600 bg-blue-50'
+                        : 'text-gray-700 hover:text-blue-600'
+                    }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <IconComponent size={16} />

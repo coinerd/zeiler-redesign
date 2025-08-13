@@ -14,29 +14,41 @@ const CategoryPage = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Filtere Artikel nach Kategorie
+    console.log('CategoryPage: Filtering articles for category:', category)
+    console.log('CategoryPage: Available articles:', articles.length)
+    
+    // Filtere Artikel nach Kategorie - verwende die korrekte Logik
     const filteredArticles = articles.filter(article => {
-      const url = article.url.toLowerCase()
+      // Debug: Log article details
+      console.log('Article:', {
+        id: article.id,
+        title: article.title,
+        author: article.author,
+        category: article.category,
+        url: article.url
+      })
       
-      // Spezielle Behandlung für Kategorien
+      // Filtere basierend auf der Kategorie
       if (category === 'detlef') {
-        return url.includes('/detlef/') || article.author === 'Detlef Zeiler'
+        return article.author === 'Detlef Zeiler' || article.url.toLowerCase().includes('/detlef/')
       } else if (category === 'julian') {
-        return url.includes('/julian/') || article.author === 'Julian Zeiler'
+        return article.author === 'Julian Zeiler' || article.url.toLowerCase().includes('/julian/')
       } else if (category === 'geschichte') {
-        return url.includes('/geschichte/') || article.category === 'geschichte'
+        return article.category === 'geschichte' || article.url.toLowerCase().includes('/geschichte/')
       } else if (category === 'projekte') {
-        return url.includes('/projekte/') || article.category === 'projekte'
+        return article.category === 'projekte' || article.url.toLowerCase().includes('/projekte/')
       } else if (category === 'medien') {
-        return url.includes('/medien/') || article.category === 'medien'
+        return article.category === 'medien' || article.url.toLowerCase().includes('/medien/')
       } else if (category === 'deutsch') {
-        return url.includes('/deutsch/') || article.category === 'deutsch'
+        return article.category === 'deutsch' || article.url.toLowerCase().includes('/deutsch/')
       } else if (category === 'techzap') {
-        return url.includes('/techzap/') || article.category === 'techzap'
+        return article.category === 'techzap' || article.url.toLowerCase().includes('/techzap/')
       }
       
       return false
     })
+    
+    console.log('CategoryPage: Filtered articles:', filteredArticles.length, filteredArticles)
     
     setCategoryArticles(filteredArticles)
     setLoading(false)

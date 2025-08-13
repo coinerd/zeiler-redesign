@@ -24,7 +24,8 @@ const Header = ({ onSearch, searchTerm }) => {
   const handleSearchChange = (e) => {
     const value = e.target.value
     setLocalSearchTerm(value)
-    if (onSearch && (location.pathname === '/' || location.hash === '#/')) {
+    // Only trigger search on homepage
+    if (onSearch && (location.pathname === '/' || location.hash === '#/' || location.hash === '')) {
       onSearch(value)
     }
   }
@@ -72,7 +73,7 @@ const Header = ({ onSearch, searchTerm }) => {
           {/* Search and Mobile Menu */}
           <div className="flex items-center space-x-4">
             {/* Search Bar - only show on homepage */}
-            {(location.pathname === '/' || location.hash === '#/') && (
+            {(location.pathname === '/' || location.hash === '#/' || location.hash === '') && (
               <div className="hidden sm:flex relative">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
@@ -123,7 +124,7 @@ const Header = ({ onSearch, searchTerm }) => {
               })}
               
               {/* Mobile Search - only show on homepage */}
-              {(location.pathname === '/' || location.hash === '#/') && (
+              {(location.pathname === '/' || location.hash === '#/' || location.hash === '') && (
                 <div className="px-3 py-2">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
